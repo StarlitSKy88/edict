@@ -130,8 +130,12 @@ link_workspace_data() {
   target_real="$(python3 -c 'import os,sys;print(os.path.realpath(sys.argv[1]))' "$target_data")"
 
   local has_workspace=false
-  for ws in "$OC_HOME"/workspace-*; do
-    [ -d "$ws" ] || continue
+  for agent in "${AGENTS[@]}"; do
+    local ws="$OC_HOME/workspace-$agent"
+    [ -d "$ws" ] || {
+      warn "workspace-$agent 不存在，跳过 data 软链建立"
+      continue
+    }
     has_workspace=true
 
     local ws_data="$ws/data"
@@ -157,7 +161,7 @@ link_workspace_data() {
   done
 
   if ! $has_workspace; then
-    warn "未检测到 workspace-* 目录，跳过 data 软链建立"
+    warn "未检测到安装脚本目标 Workspace，跳过 data 软链建立"
   fi
 }
 
