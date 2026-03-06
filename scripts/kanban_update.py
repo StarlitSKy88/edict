@@ -127,6 +127,8 @@ def _ensure_scheduler_meta(task):
     sched.setdefault("autoRollback", True)
     if not sched.get("lastProgressAt"):
         sched["lastProgressAt"] = task.get("updatedAt") or now_iso()
+    if not sched.get("lastHeartbeatAt"):
+        sched["lastHeartbeatAt"] = task.get("updatedAt") or now_iso()
     if "stallSince" not in sched:
         sched["stallSince"] = None
     if "lastDispatchStatus" not in sched:
@@ -142,6 +144,12 @@ def _scheduler_mark_progress(task, at=None):
     sched["retryCount"] = 0
     sched["escalationLevel"] = 0
     sched["lastEscalatedAt"] = None
+
+
+def _scheduler_mark_heartbeat(task, at=None):
+    ts = at or now_iso()
+    sched = _ensure_scheduler_meta(task)
+    sched["lastHeartbeatAt"] = ts
 
 
 def _scheduler_snapshot(task, at=None, note=""):
@@ -492,10 +500,12 @@ def cmd_progress(task_id, now_text, todos_pipe="", tokens=0, cost=0.0, elapsed=0
         agent_id = _infer_agent_id_from_runtime(t)
         agent_label = _AGENT_LABELS.get(agent_id, agent_id)
         log_todos = parsed_todos if parsed_todos is not None else t.get("todos", [])
+
         log_entry = {
             "at": at,
             "agent": agent_id,
             "agentLabel": agent_label,
+            "kind": "heartbeat",
             "text": clean,
             "todos": log_todos,
             "state": t.get("state", ""),
@@ -513,7 +523,7 @@ def cmd_progress(task_id, now_text, todos_pipe="", tokens=0, cost=0.0, elapsed=0
         if len(t["progress_log"]) > MAX_PROGRESS_LOG:
             t["progress_log"] = t["progress_log"][-MAX_PROGRESS_LOG:]
         t["updatedAt"] = at
-        _scheduler_mark_progress(t, at=at)
+        _scheduler_mark_heartbeat(t, at=at)
         done_cnt[0] = sum(
             1 for td in t.get("todos", []) if td.get("status") == "completed"
         )

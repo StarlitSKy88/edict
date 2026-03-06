@@ -1234,6 +1234,8 @@ def _latest_progress_dt(task):
     for item in reversed(progress_log):
         if not isinstance(item, dict):
             continue
+        if item.get("kind") != "verified":
+            continue
         ts = _parse_iso(item.get("at"))
         if ts:
             return ts
@@ -1408,8 +1410,6 @@ def handle_scheduler_scan(threshold_sec=180):
             continue
 
         sched = _ensure_scheduler(task)
-        if _scheduler_sync_progress_from_log(task):
-            changed = True
         task_threshold = int(sched.get("stallThresholdSec") or threshold_sec)
         last_progress = _parse_iso(sched.get("lastProgressAt") or task.get("updatedAt"))
         if not last_progress:
