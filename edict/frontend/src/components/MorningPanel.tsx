@@ -8,9 +8,10 @@ const CAT_META: Record<string, { icon: string; color: string; desc: string }> = 
   '军事': { icon: '⚔️', color: '#ff5270', desc: '军事与冲突' },
   '经济': { icon: '💹', color: '#2ecc8a', desc: '经济与市场' },
   'AI大模型': { icon: '🤖', color: '#a07aff', desc: 'AI与大模型进展' },
+  '技术博客': { icon: '📝', color: '#f5a623', desc: 'HN 精选技术博客（ai-daily-digest）' },
 };
 
-const DEFAULT_CATS = ['政治', '军事', '经济', 'AI大模型'];
+const DEFAULT_CATS = ['政治', '军事', '经济', 'AI大模型', '技术博客'];
 
 export default function MorningPanel() {
   const morningBrief = useStore((s) => s.morningBrief);

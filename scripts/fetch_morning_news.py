@@ -36,6 +36,18 @@ FEEDS = {
         ('VentureBeat AI', 'https://venturebeat.com/category/ai/feed/'),
         ('MIT Tech Review', 'https://www.technologyreview.com/feed/'),
     ],
+    # 技术博客精选：来源于 ai-daily-digest（https://github.com/vigorX777/ai-daily-digest）
+    # 收录 Karpathy 推荐的 HN 最受欢迎技术博客 RSS 源
+    '技术博客': [
+        ('Simon Willison', 'https://simonwillison.net/atom/everything/'),
+        ('Paul Graham', 'https://www.aaronsw.com/2002/feeds/pgessays.rss'),
+        ('antirez (Redis)', 'https://antirez.com/rss'),
+        ('overreacted.io', 'https://overreacted.io/rss.xml'),
+        ('Eli Bendersky', 'https://eli.thegreenplace.net/feeds/all.atom.xml'),
+        ('Krebs on Security', 'https://krebsonsecurity.com/feed/'),
+        ('Daring Fireball', 'https://daringfireball.net/feeds/main'),
+        ('Fabien Sanglard', 'https://fabiensanglard.net/rss.xml'),
+    ],
 }
 
 CATEGORY_KEYWORDS = {
