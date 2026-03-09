@@ -686,7 +686,7 @@ def _find_openclaw_cmd():
         r'C:\nvm4w\nodejs\openclaw',
     ]
     for c in candidates:
-        if c and Path(c).exists():
+        if c and pathlib.Path(c).exists():
             return c
     return 'openclaw'
 
@@ -2515,3 +2515,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
