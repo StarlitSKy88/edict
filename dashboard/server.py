@@ -15,6 +15,7 @@ import json, pathlib, subprocess, sys, threading, argparse, datetime, logging, r
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import urlparse
 from urllib.request import Request, urlopen
+import shutil
 
 if hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8', errors='replace')
@@ -675,6 +676,21 @@ _AGENT_DEPTS = [
 ]
 
 
+def _find_openclaw_cmd():
+    """跨平台定位 openclaw CLI，可用于 subprocess 调用。"""
+    candidates = [
+        shutil.which('openclaw'),
+        shutil.which('openclaw.cmd'),
+        shutil.which('openclaw.ps1'),
+        r'C:\nvm4w\nodejs\openclaw.cmd',
+        r'C:\nvm4w\nodejs\openclaw',
+    ]
+    for c in candidates:
+        if c and Path(c).exists():
+            return c
+    return 'openclaw'
+
+
 def _check_gateway_alive():
     """跨平台检查 Gateway 是否在线：以本地 HTTP probe 为准。"""
     return _check_gateway_probe()
@@ -834,7 +850,7 @@ def wake_agent(agent_id, message=''):
 
     def do_wake():
         try:
-            cmd = ['openclaw', 'agent', '--agent', runtime_id, '-m', msg, '--timeout', '120']
+            cmd = [_find_openclaw_cmd(), 'agent', '--agent', runtime_id, '-m', msg, '--timeout', '120']
             log.info(f'🔔 唤醒 {agent_id}...')
             # 带重试（最多2次）
             for attempt in range(1, 3):
@@ -1968,7 +1984,7 @@ def dispatch_for_state(task_id, task, new_state, trigger='state-transition'):
                     'lastDispatchTrigger': trigger,
                 }))
                 return
-            cmd = ['openclaw', 'agent', '--agent', agent_id, '-m', msg,
+            cmd = [_find_openclaw_cmd(), 'agent', '--agent', agent_id, '-m', msg,
                    '--deliver', '--channel', 'feishu', '--timeout', '300']
             max_retries = 2
             err = ''
