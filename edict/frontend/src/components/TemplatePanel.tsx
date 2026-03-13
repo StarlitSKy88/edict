@@ -1,7 +1,17 @@
 import { useState } from 'react';
 import { useStore, TEMPLATES, TPL_CATS } from '../store';
 import type { Template } from '../store';
-import { api } from '../api';
+import { api, type CourtDiscussResult } from '../api';
+
+const FREE_TARGET_DEPTS = ['中书省', '尚书省', '礼部', '户部', '兵部', '刑部', '工部', '吏部'];
+const DISCUSS_AGENT_OPTIONS = [
+  { id: 'taizi', label: '太子', emoji: '🤴' },
+  { id: 'zhongshu', label: '中书省', emoji: '📜' },
+  { id: 'menxia', label: '门下省', emoji: '🔍' },
+  { id: 'shangshu', label: '尚书省', emoji: '📮' },
+  { id: 'hubu', label: '户部', emoji: '💰' },
+  { id: 'bingbu', label: '兵部', emoji: '⚔️' },
+];
 
 export default function TemplatePanel() {
   const tplCatFilter = useStore((s) => s.tplCatFilter);
@@ -12,6 +22,14 @@ export default function TemplatePanel() {
   const [formTpl, setFormTpl] = useState<Template | null>(null);
   const [formVals, setFormVals] = useState<Record<string, string>>({});
   const [previewCmd, setPreviewCmd] = useState('');
+  const [freeTitle, setFreeTitle] = useState('');
+  const [freeTargetDept, setFreeTargetDept] = useState('');
+  const [freePriority, setFreePriority] = useState('normal');
+  const [discussTopic, setDiscussTopic] = useState('');
+  const [discussParticipants, setDiscussParticipants] = useState<string[]>(['taizi', 'zhongshu', 'menxia']);
+  const [discussSessionId, setDiscussSessionId] = useState('');
+  const [discussLoading, setDiscussLoading] = useState(false);
+  const [discussResult, setDiscussResult] = useState<CourtDiscussResult | null>(null);
 
   let tpls = TEMPLATES;
   if (tplCatFilter !== '全部') tpls = tpls.filter((t) => t.cat === tplCatFilter);
@@ -39,6 +57,19 @@ export default function TemplatePanel() {
     setPreviewCmd(buildCmd(formTpl));
   };
 
+  const ensureGatewayReady = async () => {
+    try {
+      const st = await api.agentsStatus();
+      if (st.ok && st.gateway && !st.gateway.alive) {
+        toast('⚠️ Gateway 未启动，任务将无法派发！', 'err');
+        if (!confirm('Gateway 未启动，继续？')) return false;
+      }
+    } catch {
+      /* ignore */
+    }
+    return true;
+  };
+
   const execute = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formTpl) return;
@@ -48,16 +79,7 @@ export default function TemplatePanel() {
       return;
     }
 
-    // Pre-check gateway
-    try {
-      const st = await api.agentsStatus();
-      if (st.ok && st.gateway && !st.gateway.alive) {
-        toast('⚠️ Gateway 未启动，任务将无法派发！', 'err');
-        if (!confirm('Gateway 未启动，继续？')) return;
-      }
-    } catch {
-      /* ignore */
-    }
+    if (!(await ensureGatewayReady())) return;
 
     if (!confirm(`确认下旨？\n\n${cmd.substring(0, 200)}${cmd.length > 200 ? '…' : ''}`)) return;
 
@@ -67,7 +89,7 @@ export default function TemplatePanel() {
         params[p.key] = formVals[p.key] || p.default || '';
       }
       const r = await api.createTask({
-        title: cmd.substring(0, 120),
+        title: cmd,
         org: '中书省',
         targetDept: formTpl.depts[0] || '',
         priority: 'normal',
@@ -86,8 +108,421 @@ export default function TemplatePanel() {
     }
   };
 
+  const toggleDiscussParticipant = (agentId: string) => {
+    setDiscussParticipants((curr) => {
+      if (curr.includes(agentId)) {
+        if (curr.length <= 1) return curr;
+        return curr.filter((x) => x !== agentId);
+      }
+      return [...curr, agentId];
+    });
+  };
+
+  const startCourtDiscuss = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const topic = discussTopic.trim();
+    if (topic.length < 10) {
+      toast('议题至少 10 个字', 'err');
+      return;
+    }
+    if (discussParticipants.length < 2) {
+      toast('至少选择 2 位大臣参与议政', 'err');
+      return;
+    }
+    if (!(await ensureGatewayReady())) return;
+    if (!confirm(`开始御前议政？\n\n议题：${topic.substring(0, 120)}${topic.length > 120 ? '…' : ''}`)) return;
+    setDiscussLoading(true);
+    setDiscussSessionId('');
+    setDiscussResult(null);
+    try {
+      const r = await api.courtDiscuss({
+        action: 'start',
+        topic,
+        participants: discussParticipants,
+      });
+      setDiscussResult(r);
+      setDiscussSessionId(r.sessionId || '');
+      if (r.ok) {
+        toast('🧠 首轮议政完成，请皇上拍板继续或结束', 'ok');
+      } else {
+        toast(r.error || '议政失败', 'err');
+      }
+    } catch {
+      toast('⚠️ 服务器连接失败', 'err');
+    } finally {
+      setDiscussLoading(false);
+    }
+  };
+
+  const continueCourtDiscuss = async () => {
+    if (!discussSessionId) {
+      toast('请先开始议政', 'err');
+      return;
+    }
+    setDiscussLoading(true);
+    try {
+      const r = await api.courtDiscuss({
+        action: 'next',
+        sessionId: discussSessionId,
+      });
+      setDiscussResult(r);
+      if (r.ok) {
+        toast('已继续一轮讨论', 'ok');
+      } else {
+        toast(r.error || '继续讨论失败', 'err');
+      }
+    } catch {
+      toast('⚠️ 服务器连接失败', 'err');
+    } finally {
+      setDiscussLoading(false);
+    }
+  };
+
+  const finalizeCourtDiscuss = async () => {
+    if (!discussSessionId) {
+      toast('请先开始议政', 'err');
+      return;
+    }
+    if (!confirm('确认结束讨论并生成最终旨意草案？')) return;
+    setDiscussLoading(true);
+    try {
+      const r = await api.courtDiscuss({
+        action: 'finalize',
+        sessionId: discussSessionId,
+      });
+      setDiscussResult(r);
+      if (r.ok) {
+        toast('✅ 已结束讨论并生成草案', 'ok');
+      } else {
+        toast(r.error || '结束讨论失败', 'err');
+      }
+    } catch {
+      toast('⚠️ 服务器连接失败', 'err');
+    } finally {
+      setDiscussLoading(false);
+    }
+  };
+
+  const adoptDiscussEdict = () => {
+    const edict = discussResult?.final?.recommended_edict?.trim();
+    if (!edict) {
+      toast('没有可用的建议旨意', 'err');
+      return;
+    }
+    setFreeTitle(edict);
+    if (discussResult?.final?.recommended_target_dept) {
+      setFreeTargetDept(discussResult.final.recommended_target_dept);
+    }
+    if (discussResult?.final?.recommended_priority) {
+      setFreePriority(discussResult.final.recommended_priority);
+    }
+    toast('已填入自由下旨区，请确认后下旨', 'ok');
+  };
+
+  const issueDiscussEdictNow = async () => {
+    const final = discussResult?.final;
+    const title = final?.recommended_edict?.trim();
+    if (!title) {
+      toast('没有可下达的旨意草案', 'err');
+      return;
+    }
+    if (!(await ensureGatewayReady())) return;
+    if (!confirm(`确认将议政结论直接下旨？\n\n${title.substring(0, 200)}${title.length > 200 ? '…' : ''}`)) return;
+    try {
+      const r = await api.createTask({
+        title,
+        org: '中书省',
+        targetDept: final?.recommended_target_dept || '',
+        priority: final?.recommended_priority || 'normal',
+        templateId: 'court-discuss',
+        params: { source: 'court-discuss' },
+      });
+      if (r.ok) {
+        toast(`📜 ${r.taskId} 旨意已下达`, 'ok');
+        loadAll();
+      } else {
+        toast(r.error || '下旨失败', 'err');
+      }
+    } catch {
+      toast('⚠️ 服务器连接失败', 'err');
+    }
+  };
+
+  const submitFreeEdict = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const title = freeTitle.trim();
+    if (!title) {
+      toast('请先输入旨意内容', 'err');
+      return;
+    }
+    if (title.length < 10) {
+      toast('旨意至少 10 个字，避免被判定为闲聊', 'err');
+      return;
+    }
+    if (!(await ensureGatewayReady())) return;
+    if (!confirm(`确认下旨给太子？\n\n${title.substring(0, 200)}${title.length > 200 ? '…' : ''}`)) return;
+
+    try {
+      const r = await api.createTask({
+        title,
+        org: '中书省',
+        targetDept: freeTargetDept || '',
+        priority: freePriority,
+        templateId: 'manual-free',
+        params: { source: 'free-edict' },
+      });
+      if (r.ok) {
+        toast(`📜 ${r.taskId} 旨意已下达`, 'ok');
+        setFreeTitle('');
+        setFreeTargetDept('');
+        setFreePriority('normal');
+        loadAll();
+      } else {
+        toast(r.error || '下旨失败', 'err');
+      }
+    } catch {
+      toast('⚠️ 服务器连接失败', 'err');
+    }
+  };
+
   return (
     <div>
+      <div
+        style={{
+          background: 'var(--panel)',
+          border: '1px solid var(--line)',
+          borderRadius: 12,
+          padding: 14,
+          marginBottom: 16,
+        }}
+      >
+        <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 6 }}>御前议政（先讨论再下旨）</div>
+        <div style={{ fontSize: 12, color: 'var(--muted)', marginBottom: 10 }}>
+          适合想法尚未成熟时，先让太子与诸臣讨论澄清，再生成可执行旨意。
+        </div>
+        <form onSubmit={startCourtDiscuss}>
+          <textarea
+            className="tpl-input"
+            style={{ minHeight: 88, resize: 'vertical', marginBottom: 10 }}
+            placeholder="例如：目前天下要闻标题是英文，想在看板中展示中文标题，但点击后保持英文原文。请先讨论清楚方案和边界。"
+            value={discussTopic}
+            onChange={(e) => setDiscussTopic(e.target.value)}
+            disabled={discussLoading}
+          />
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 10 }}>
+            <button type="submit" className="tpl-go" style={{ flex: '0 0 170px' }} disabled={discussLoading}>
+              {discussLoading ? '⏳ 议政中...' : '🧠 开始首轮议政'}
+            </button>
+            {discussSessionId && (
+              <span style={{ fontSize: 11, color: 'var(--muted)', alignSelf: 'center' }}>
+                会话: {discussSessionId}
+              </span>
+            )}
+          </div>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 8 }}>
+            {DISCUSS_AGENT_OPTIONS.map((x) => {
+              const active = discussParticipants.includes(x.id);
+              return (
+                <button
+                  key={x.id}
+                  type="button"
+                  className="tpl-cat"
+                  onClick={() => toggleDiscussParticipant(x.id)}
+                  style={{
+                    cursor: 'pointer',
+                    borderColor: active ? 'var(--acc)' : 'var(--line)',
+                    color: active ? 'var(--text)' : 'var(--muted)',
+                    background: active ? 'var(--acc-soft)' : 'transparent',
+                  }}
+                  disabled={discussLoading}
+                >
+                  {x.emoji} {x.label}
+                </button>
+              );
+            })}
+          </div>
+        </form>
+
+        {discussResult && (
+          <div
+            style={{
+              borderTop: '1px dashed var(--line)',
+              marginTop: 10,
+              paddingTop: 10,
+              fontSize: 12,
+            }}
+          >
+            {!discussResult.ok && (
+              <div style={{ color: 'var(--danger)', marginBottom: 8 }}>
+                ⚠️ {discussResult.error || '议政失败'}
+              </div>
+            )}
+            {discussResult.final && (
+              <>
+                <div style={{ fontWeight: 700, marginBottom: 6 }}>
+                  {discussResult.final.ready_for_edict ? '✅ 结论：可下旨' : '🟡 结论：建议先澄清'}
+                </div>
+                {discussResult.final.clarified_goal && (
+                  <div style={{ color: 'var(--muted)', marginBottom: 8 }}>
+                    目标澄清：{discussResult.final.clarified_goal}
+                  </div>
+                )}
+                {discussResult.final.risks?.length > 0 && (
+                  <div style={{ marginBottom: 8 }}>
+                    <div style={{ fontWeight: 600, marginBottom: 4 }}>主要风险</div>
+                    <ul style={{ margin: 0, paddingLeft: 18 }}>
+                      {discussResult.final.risks.slice(0, 4).map((x, i) => (
+                        <li key={i}>{String(x)}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {discussResult.final.questions_to_emperor?.length > 0 && (
+                  <div style={{ marginBottom: 8 }}>
+                    <div style={{ fontWeight: 600, marginBottom: 4 }}>待皇上确认</div>
+                    <ul style={{ margin: 0, paddingLeft: 18 }}>
+                      {discussResult.final.questions_to_emperor.slice(0, 4).map((x, i) => (
+                        <li key={i}>{String(x)}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                <div
+                  style={{
+                    background: 'var(--panel2)',
+                    border: '1px solid var(--line)',
+                    borderRadius: 8,
+                    padding: 10,
+                    whiteSpace: 'pre-wrap',
+                    lineHeight: 1.55,
+                    marginBottom: 10,
+                  }}
+                >
+                  {discussResult.final.recommended_edict || '（暂无旨意草案）'}
+                </div>
+                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                  <button type="button" className="btn btn-g" onClick={adoptDiscussEdict}>
+                    📥 采用到下旨框
+                  </button>
+                  <button type="button" className="tpl-go" onClick={issueDiscussEdictNow}>
+                    📜 直接下旨
+                  </button>
+                </div>
+              </>
+            )}
+            {!discussResult.final && discussResult.assessment && (
+              <div
+                style={{
+                  background: 'var(--panel2)',
+                  border: '1px solid var(--line)',
+                  borderRadius: 8,
+                  padding: 10,
+                  marginBottom: 10,
+                }}
+              >
+                <div style={{ fontWeight: 700, marginBottom: 4 }}>
+                  {discussResult.assessment.moderatorLabel} 本轮建议：
+                  {discussResult.assessment.recommend_stop ? '请皇上决定是否结束讨论' : '建议继续下一轮讨论'}
+                </div>
+                {discussResult.assessment.reason && (
+                  <div style={{ color: 'var(--muted)', marginBottom: 6 }}>
+                    原因：{discussResult.assessment.reason}
+                  </div>
+                )}
+                {discussResult.assessment.question_to_emperor && (
+                  <div style={{ marginBottom: 8 }}>
+                    请皇上拍板：{discussResult.assessment.question_to_emperor}
+                  </div>
+                )}
+                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                  <button type="button" className="btn btn-g" onClick={continueCourtDiscuss} disabled={discussLoading}>
+                    皇上：继续讨论一轮
+                  </button>
+                  <button type="button" className="tpl-go" onClick={finalizeCourtDiscuss} disabled={discussLoading}>
+                    皇上：同意结束讨论
+                  </button>
+                </div>
+              </div>
+            )}
+            {discussResult.discussion && discussResult.discussion.length > 0 && (
+              <details style={{ marginTop: 10 }}>
+                <summary style={{ cursor: 'pointer', color: 'var(--muted)' }}>
+                  查看讨论详情（{discussResult.discussion.length} 条）
+                </summary>
+                <div style={{ marginTop: 8, maxHeight: 260, overflow: 'auto' }}>
+                  {discussResult.discussion.map((x, i) => (
+                    <div
+                      key={i}
+                      style={{
+                        border: '1px solid var(--line)',
+                        borderRadius: 8,
+                        padding: 8,
+                        marginBottom: 8,
+                        background: 'var(--panel2)',
+                      }}
+                    >
+                      <div style={{ fontWeight: 700, marginBottom: 4 }}>
+                        第{x.round}轮 · {x.agentLabel}
+                      </div>
+                      <div style={{ whiteSpace: 'pre-wrap', lineHeight: 1.5 }}>{x.reply}</div>
+                    </div>
+                  ))}
+                </div>
+              </details>
+            )}
+          </div>
+        )}
+      </div>
+
+      <div
+        style={{
+          background: 'var(--panel)',
+          border: '1px solid var(--line)',
+          borderRadius: 12,
+          padding: 14,
+          marginBottom: 16,
+        }}
+      >
+        <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 6 }}>自由下旨（不走模板）</div>
+        <div style={{ fontSize: 12, color: 'var(--muted)', marginBottom: 10 }}>
+          直接输入任务指令，系统会创建旨意并先派发给太子分拣。
+        </div>
+        <form onSubmit={submitFreeEdict}>
+          <textarea
+            className="tpl-input"
+            style={{ minHeight: 92, resize: 'vertical', marginBottom: 10 }}
+            placeholder="例如：请对 edict 项目做一次端到端测试审查，重点检查任务卡住时的自动重试与回滚链路。"
+            value={freeTitle}
+            onChange={(e) => setFreeTitle(e.target.value)}
+          />
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 10 }}>
+            <select
+              className="tpl-input"
+              style={{ flex: '1 1 220px' }}
+              value={freeTargetDept}
+              onChange={(e) => setFreeTargetDept(e.target.value)}
+            >
+              <option value="">建议执行部门（可选）</option>
+              {FREE_TARGET_DEPTS.map((d) => (
+                <option key={d} value={d}>{d}</option>
+              ))}
+            </select>
+            <select
+              className="tpl-input"
+              style={{ flex: '0 0 160px' }}
+              value={freePriority}
+              onChange={(e) => setFreePriority(e.target.value)}
+            >
+              <option value="low">低</option>
+              <option value="normal">普通</option>
+              <option value="high">高</option>
+              <option value="critical">紧急</option>
+            </select>
+            <button type="submit" className="tpl-go" style={{ flex: '0 0 130px' }}>📜 下旨</button>
+          </div>
+        </form>
+      </div>
+
       {/* Category filter */}
       <div style={{ display: 'flex', gap: 6, marginBottom: 16, flexWrap: 'wrap' }}>
         {TPL_CATS.map((c) => (
