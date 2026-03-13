@@ -997,6 +997,7 @@ def _build_court_response(session, message=''):
         },
         'assessment': assessment,
         'suggestedAction': session.get('suggestedAction', 'next'),
+        'linkedTaskId': session.get('linkedTaskId', ''),
         'discussion': (session.get('discussion') or [])[-80:],
         'final': session.get('final'),
         'message': message or session.get('message', ''),
@@ -1010,7 +1011,7 @@ def _run_court_round(session):
     transcript = session.setdefault('discussion', [])
     round_entries = []
 
-    for aid in selected:
+    for idx, aid in enumerate(selected):
         label = _agent_label(aid)
         recent = transcript[-6:]
         recent_text = '\n\n'.join([
@@ -1020,7 +1021,7 @@ def _run_court_round(session):
         prompt = (
             f'你正在参与御前议政讨论，角色是「{label}」。\n'
             f'议题：{topic}\n'
-            f'当前第 {round_no} 轮。\n\n'
+            f'当前第 {round_no} 轮，你是本轮第 {idx + 1}/{len(selected)} 位发言。\n\n'
             f'最近讨论摘要：\n{recent_text}\n\n'
             f'请输出四段（中文、简洁）：\n'
             f'【你认为最关键的澄清点】\n'
@@ -1031,6 +1032,8 @@ def _run_court_round(session):
         reply = _run_agent_sync(aid, prompt, timeout_sec=120)
         round_entries.append({
             'round': round_no,
+            'turn': idx + 1,
+            'totalTurns': len(selected),
             'agentId': aid,
             'agentLabel': label,
             'reply': reply[:4000],
@@ -1145,10 +1148,9 @@ def _finalize_court_session(session, force=False):
 
 
 def handle_court_discuss(action='start', topic='', participants=None, session_id='', force=False):
-    if not _check_gateway_alive():
-        return {'ok': False, 'error': 'Gateway 未启动，请先运行 openclaw gateway start'}
-
     action = (action or 'start').strip().lower()
+    if action in ('start', 'next', 'finalize', 'handoff') and not _check_gateway_alive():
+        return {'ok': False, 'error': 'Gateway 未启动，请先运行 openclaw gateway start'}
     if action == 'start':
         topic = (topic or '').strip()
         if len(topic) < 10:
@@ -1217,6 +1219,55 @@ def handle_court_discuss(action='start', topic='', participants=None, session_id
         finalized = _finalize_court_session(session, force=bool(force))
         if not finalized.get('ok'):
             return finalized
+        _upsert_court_session(session)
+        return _build_court_response(session, session.get('message', ''))
+
+    if action == 'handoff':
+        if session.get('status') == 'terminated':
+            return _build_court_response(session, '话题已终止，无法交办')
+        if session.get('linkedTaskId'):
+            return _build_court_response(session, f'该话题已交办：{session.get("linkedTaskId")}')
+        if not session.get('final'):
+            finalized = _finalize_court_session(session, force=bool(force))
+            if not finalized.get('ok'):
+                return finalized
+        final = session.get('final') or {}
+        if not bool(final.get('ready_for_edict')) and not force:
+            return {'ok': False, 'error': '当前结论未达到可下旨状态，如需强制交办请传 force=true'}
+
+        title = str(final.get('recommended_edict') or session.get('topic') or '').strip()
+        if not title:
+            return {'ok': False, 'error': '结论缺少可交办内容'}
+        target_dept = str(final.get('recommended_target_dept') or '').strip()
+        priority = str(final.get('recommended_priority') or 'normal').strip()
+        create = handle_create_task(
+            title=title,
+            org='中书省',
+            official='中书令',
+            priority=priority,
+            template_id='court-discuss',
+            params={'source': 'court-discuss', 'sessionId': session.get('id', '')},
+            target_dept=target_dept,
+        )
+        if not create.get('ok'):
+            return {'ok': False, 'error': create.get('error') or '交办失败'}
+
+        session['status'] = 'handoffed'
+        session['linkedTaskId'] = create.get('taskId', '')
+        session['handoffAt'] = now_iso()
+        session['updatedAt'] = now_iso()
+        session['message'] = f'已交由太子办理：{session["linkedTaskId"]}'
+        _upsert_court_session(session)
+        return _build_court_response(session, session.get('message', ''))
+
+    if action == 'terminate':
+        if session.get('linkedTaskId'):
+            return _build_court_response(session, f'该话题已交办：{session.get("linkedTaskId")}，不可终止')
+        session['status'] = 'terminated'
+        session['terminatedAt'] = now_iso()
+        session['updatedAt'] = now_iso()
+        session['suggestedAction'] = 'terminate'
+        session['message'] = '皇上裁决：该话题不进入办理流程，已终止'
         _upsert_court_session(session)
         return _build_court_response(session, session.get('message', ''))
 
@@ -4373,7 +4424,7 @@ class Handler(BaseHTTPRequestHandler):
             if action == 'start' and not topic:
                 self.send_json({'ok': False, 'error': 'topic required'}, 400)
                 return
-            if action in ('next', 'status', 'finalize') and not session_id:
+            if action in ('next', 'status', 'finalize', 'handoff', 'terminate') and not session_id:
                 self.send_json({'ok': False, 'error': 'sessionId required'}, 400)
                 return
             result = handle_court_discuss(action=action, topic=topic, participants=participants, session_id=session_id, force=force)
