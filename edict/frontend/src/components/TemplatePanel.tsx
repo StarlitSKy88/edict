@@ -160,7 +160,7 @@ export default function TemplatePanel() {
       setDiscussResult(r);
       setDiscussSessionId(r.sessionId || '');
       if (r.ok) {
-        toast('🧠 首轮议政完成，请皇上拍板继续或结束', 'ok');
+        toast('🧠 首轮议政已启动，正在轮番发言', 'ok');
       } else {
         toast(r.error || '议政失败', 'err');
       }
@@ -198,7 +198,7 @@ export default function TemplatePanel() {
       });
       setDiscussResult(r);
       if (r.ok) {
-        toast('已继续一轮讨论', 'ok');
+        toast('已启动下一轮讨论', 'ok');
       } else {
         toast(r.error || '继续讨论失败', 'err');
       }
@@ -235,8 +235,55 @@ export default function TemplatePanel() {
     }
   };
 
+  const normalizeForCompare = (text: string) => text.replace(/[^\p{L}\p{N}]+/gu, '').toLowerCase();
+
+  const isTooCloseToTopic = (topic: string, edict: string) => {
+    const t = normalizeForCompare(topic);
+    const e = normalizeForCompare(edict);
+    if (!e || edict.trim().length < 20) return true;
+    if (!t) return false;
+    if (t === e || t.includes(e) || e.includes(t)) return true;
+    let same = 0;
+    for (const ch of e) {
+      if (t.includes(ch)) same += 1;
+    }
+    return same / Math.max(e.length, 1) > 0.85;
+  };
+
+  const buildDiscussConclusionForFreeEdict = (r: CourtDiscussResult) => {
+    const topic = (r.topic || '').trim();
+    const final = r.final;
+    const edict = (final?.recommended_edict || '').trim();
+    const clarifiedGoal = (final?.clarified_goal || '').trim();
+    const draftDirection = (r.assessment?.draft_direction || '').trim();
+    const latestNote = (r.emperorNotes || []).slice(-1)[0]?.text?.trim() || '';
+
+    if (edict && !isTooCloseToTopic(topic, edict)) return edict;
+
+    const round = r.rounds || 0;
+    const highlights = (r.discussion || [])
+      .filter((x) => (x.round || 0) === round && (x.reply || '').trim())
+      .slice(-3)
+      .map((x) => {
+        const plain = (x.reply || '').replace(/\s+/g, ' ').trim();
+        const short = plain.length > 90 ? `${plain.slice(0, 90)}...` : plain;
+        return `${x.agentLabel}：${short}`;
+      });
+
+    const goal = clarifiedGoal || draftDirection || topic || '落实本次议政结论';
+    const lines = [`请太子牵头办理：${goal}。`];
+    if (highlights.length > 0) lines.push(`议政要点：${highlights.join('；')}。`);
+    if (latestNote) lines.push(`皇上最终拍板：${latestNote}。`);
+    lines.push('请形成执行方案、风险清单与里程碑，并按节点回报。');
+    return lines.join('\n');
+  };
+
   const adoptDiscussEdict = () => {
-    const edict = discussResult?.final?.recommended_edict?.trim();
+    if (!discussResult) {
+      toast('没有可用的议政结论', 'err');
+      return;
+    }
+    const edict = buildDiscussConclusionForFreeEdict(discussResult);
     if (!edict) {
       toast('没有可用的建议旨意', 'err');
       return;
@@ -248,7 +295,8 @@ export default function TemplatePanel() {
     if (discussResult?.final?.recommended_priority) {
       setFreePriority(discussResult.final.recommended_priority);
     }
-    toast('已填入自由下旨区，请确认后下旨', 'ok');
+    setDiscussWindowOpen(false);
+    toast('已将议政结论填入自由下旨区', 'ok');
   };
 
   const handoffCourtDiscuss = async () => {
