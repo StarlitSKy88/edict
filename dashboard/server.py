@@ -2350,6 +2350,11 @@ def commit_state_change(
             task['org'] = to_org
         else:
             task['org'] = _derive_org_for_state(task, to_state, task.get('org', ''))
+        # 进入非执行态时清理 writeback 阶段残留，避免 controlState 被旧状态污染
+        if to_state != 'Doing':
+            wb = sched.setdefault('writeback', {})
+            wb['status'] = 'idle'
+            wb['lastError'] = ''
         _scheduler_mark_state_change(task, to_state, reason_code=reason_code)
     elif to_org is not None:
         task['org'] = to_org
@@ -4211,6 +4216,18 @@ def _should_auto_handoff_to_zhongshu(text):
     return any(re.search(p, content) for p in patterns)
 
 
+def _should_auto_handoff_to_menxia(text):
+    if not text:
+        return False
+    content = text.replace('\n', ' ')
+    patterns = [
+        r'(提交|送交|转交|移交|请交).{0,8}门下省',
+        r'门下省.{0,8}(审议|审核|复核|裁决)',
+        r'(请|待).{0,4}门下省.{0,4}(准奏|审议)',
+    ]
+    return any(re.search(p, content) for p in patterns)
+
+
 def _auto_handoff_to_zhongshu(task_id, reason_text=''):
     tasks = load_tasks()
     task = next((t for t in tasks if t.get('id') == task_id), None)
@@ -4245,8 +4262,49 @@ def _auto_handoff_to_zhongshu(task_id, reason_text=''):
         save_tasks(tasks)
         return {'ok': False, 'reason': f'commit_blocked:{commit.get("blockedBy")}'}
     _scheduler_mark_progress(task, '太子自动转交中书省', reason_code='taizi_auto_handoff')
+    _release_lease(task, run_id)
     save_tasks(tasks)
-    dispatch_for_state(task_id, task, 'Zhongshu', trigger='taizi-auto-handoff', owner_run_id=run_id)
+    dispatch_for_state(task_id, task, 'Zhongshu', trigger='taizi-auto-handoff')
+    return {'ok': True}
+
+
+def _auto_handoff_to_menxia(task_id, reason_text=''):
+    tasks = load_tasks()
+    task = next((t for t in tasks if t.get('id') == task_id), None)
+    if not task:
+        return {'ok': False, 'reason': 'task_not_found'}
+    cur_state = task.get('state', '')
+    if cur_state != 'Zhongshu':
+        return {'ok': False, 'reason': f'state={cur_state}'}
+
+    _ensure_scheduler(task)
+    _scheduler_snapshot(task, 'zhongshu-auto-handoff-before')
+    run_id = _new_run_id()
+    _acquire_lease(task, stage=cur_state, role='zhongshu-auto-handoff', owner_run_id=run_id, ttl_sec=180, force_takeover=True)
+    version = task.get('_scheduler', {}).get('stateVersion')
+    remark = reason_text or '中书省已提交门下省审议'
+    commit = commit_state_change(
+        task,
+        action='advance',
+        reason_code='zhongshu_auto_handoff',
+        owner_run_id=run_id,
+        expected_version=version,
+        to_state='Menxia',
+        to_org='门下省',
+        now_text='门下省审议方案',
+        block_text='无',
+        flow_from='中书省',
+        flow_to='门下省',
+        flow_remark=remark,
+        force=True,
+    )
+    if not commit.get('committed'):
+        save_tasks(tasks)
+        return {'ok': False, 'reason': f'commit_blocked:{commit.get("blockedBy")}'}
+    _scheduler_mark_progress(task, '中书省自动提交门下省审议', reason_code='zhongshu_auto_handoff')
+    _release_lease(task, run_id)
+    save_tasks(tasks)
+    dispatch_for_state(task_id, task, 'Menxia', trigger='zhongshu-auto-handoff')
     return {'ok': True}
 
 
@@ -4505,9 +4563,29 @@ def dispatch_for_state(task_id, task, new_state, trigger='state-transition', own
             for attempt in range(1, max_retries + 1):
                 log.info(f'🔄 自动派发 {task_id} → {agent_id} (第{attempt}次)...')
                 result = subprocess.run(cmd, capture_output=True, text=True, timeout=310)
+                dispatch_text = ((result.stdout or '') + '\n' + (result.stderr or '')).strip()
+                if result.returncode == 0 and _looks_like_provider_tool_error(dispatch_text):
+                    model_name = _get_agent_model(agent_id)
+                    if _is_gemini_model(model_name):
+                        try:
+                            dispatch_text = _run_aihub_gemini_content(model_name, msg, timeout_sec=120)
+                            log.info(f'🧩 {task_id} {agent_id} 命中 schema 不兼容，已改用 Gemini 协议兜底')
+                        except Exception as e:
+                            err = f'gemini-fallback-failed: {str(e)[:180]}'
+                            log.warning(f'⚠️ {task_id} Gemini 协议兜底失败(第{attempt}次): {err}')
+                            if attempt < max_retries:
+                                import time
+                                time.sleep(5)
+                            continue
+                    else:
+                        err = _friendly_agent_error(dispatch_text)
+                        log.warning(f'⚠️ {task_id} 派发响应异常(第{attempt}次): {err}')
+                        if attempt < max_retries:
+                            import time
+                            time.sleep(5)
+                        continue
                 if result.returncode == 0:
                     log.info(f'✅ {task_id} 自动派发成功 → {agent_id}')
-                    dispatch_text = ((result.stdout or '') + '\n' + (result.stderr or '')).strip()
                     bridge = _bridge_apply_kanban_commands(task_id, dispatch_text)
                     if (
                         agent_id == 'taizi'
@@ -4518,6 +4596,15 @@ def dispatch_for_state(task_id, task, new_state, trigger='state-transition', own
                         auto = _auto_handoff_to_zhongshu(task_id, '太子指令：转交中书省起草执行方案')
                         if auto.get('ok'):
                             log.info(f'🚦 {task_id} 太子已转交中书省，自动推进到 Zhongshu')
+                    if (
+                        agent_id == 'zhongshu'
+                        and new_state == 'Zhongshu'
+                        and not bridge.get('attempted')
+                        and _should_auto_handoff_to_menxia(dispatch_text)
+                    ):
+                        auto = _auto_handoff_to_menxia(task_id, '中书省方案已提交门下省审议')
+                        if auto.get('ok'):
+                            log.info(f'🚦 {task_id} 中书省已提交门下省，自动推进到 Menxia')
                     handoff = {'ok': False}
                     handoff_dept = ''
                     if agent_id == 'shangshu' and new_state in ('Assigned', 'Next'):
@@ -4552,8 +4639,12 @@ def dispatch_for_state(task_id, task, new_state, trigger='state-transition', own
                         if not wb.get('firstOutputAt'):
                             wb['firstOutputAt'] = now_iso()
                         if bridge.get('attempted', 0) <= 0:
-                            wb['status'] = 'ExecutionOutputReady'
-                            wb['lastError'] = 'no_bridge_command_detected'
+                            if new_state in ('Doing', 'Assigned', 'Next'):
+                                wb['status'] = 'ExecutionOutputReady'
+                                wb['lastError'] = 'no_bridge_command_detected'
+                            else:
+                                wb['status'] = 'idle'
+                                wb['lastError'] = ''
                         elif bridge.get('applied', 0) >= bridge.get('attempted', 0):
                             wb['status'] = 'idle'
                             wb['lastCommittedAt'] = now_iso()

@@ -314,3 +314,36 @@ def test_should_auto_handoff_to_zhongshu():
     assert srv._should_auto_handoff_to_zhongshu('正在将旨意转交中书省起草执行方案，等待中书省确认')
     assert srv._should_auto_handoff_to_zhongshu('已交由中书省拟定执行方案')
     assert not srv._should_auto_handoff_to_zhongshu('仅通报进展，不转交')
+
+
+def test_should_auto_handoff_to_menxia():
+    assert srv._should_auto_handoff_to_menxia('中书省方案已提交门下省审议，请皇上知悉')
+    assert srv._should_auto_handoff_to_menxia('请交门下省审核后再准奏')
+    assert not srv._should_auto_handoff_to_menxia('仅在中书省内部讨论方案细节')
+
+
+def test_commit_state_change_clears_writeback_for_non_doing():
+    task = {
+        'id': 'JJC-T',
+        'state': 'Doing',
+        'org': '中书省',
+        'now': 'x',
+        'block': '无',
+        '_scheduler': {
+            'stateVersion': 1,
+            'writeback': {'status': 'ExecutionOutputReady', 'lastError': 'x'},
+        },
+    }
+    srv._ensure_scheduler(task)
+    out = srv.commit_state_change(
+        task,
+        action='advance',
+        reason_code='test',
+        to_state='Zhongshu',
+        to_org='中书省',
+        force=True,
+    )
+    assert out.get('ok') is True
+    wb = task.get('_scheduler', {}).get('writeback', {})
+    assert wb.get('status') == 'idle'
+    assert wb.get('lastError') == ''
