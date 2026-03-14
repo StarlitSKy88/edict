@@ -148,25 +148,138 @@ AGENTS = [
   {"id": "zaochao",  "subagents": {"allowAgents": []}},
 ]
 
-agents_cfg = cfg.setdefault('agents', {})
+def _ensure_dict(parent, key):
+    val = parent.get(key)
+    if not isinstance(val, dict):
+        val = {}
+        parent[key] = val
+    return val
+
+def _ensure_list(parent, key):
+    val = parent.get(key)
+    if not isinstance(val, list):
+        val = []
+        parent[key] = val
+    return val
+
+def _uniq(items):
+    out = []
+    seen = set()
+    for i in items:
+        if i in seen:
+            continue
+        seen.add(i)
+        out.append(i)
+    return out
+
+agents_cfg = _ensure_dict(cfg, 'agents')
 agents_list = agents_cfg.get('list', [])
-existing_ids = {a['id'] for a in agents_list}
+if not isinstance(agents_list, list):
+    agents_list = []
+    agents_cfg['list'] = agents_list
+existing_by_id = {
+    a.get('id'): a for a in agents_list
+    if isinstance(a, dict) and a.get('id')
+}
 
 added = 0
+updated = 0
 for ag in AGENTS:
     ag_id = ag['id']
     ws = str(pathlib.Path.home() / f'.openclaw/workspace-{ag_id}')
-    if ag_id not in existing_ids:
+    spec_allow = ag.get('subagents', {}).get('allowAgents', [])
+    if ag_id not in existing_by_id:
         entry = {'id': ag_id, 'workspace': ws, **{k:v for k,v in ag.items() if k!='id'}}
         agents_list.append(entry)
         added += 1
         print(f'  + added: {ag_id}')
     else:
-        print(f'  ~ exists: {ag_id} (skipped)')
+        entry = existing_by_id[ag_id]
+        changed = False
+
+        if not entry.get('workspace'):
+            entry['workspace'] = ws
+            changed = True
+
+        sub_cfg = _ensure_dict(entry, 'subagents')
+        allow = _ensure_list(sub_cfg, 'allowAgents')
+        merged = _uniq([*allow, *spec_allow])
+        if merged != allow:
+            sub_cfg['allowAgents'] = merged
+            changed = True
+
+        if changed:
+            updated += 1
+            print(f'  ~ exists: {ag_id} (updated)')
+        else:
+            print(f'  ~ exists: {ag_id} (unchanged)')
+
+# ---- OpenClaw session/subagent tool defaults (fill missing only) ----
+# 官方路径：maxSpawnDepth 在 agents.defaults.subagents，而不是 tools.subagents。
+agent_ids = [a['id'] for a in AGENTS]
+
+agents_defaults = _ensure_dict(agents_cfg, 'defaults')
+sub_defaults = _ensure_dict(agents_defaults, 'subagents')
+if 'maxSpawnDepth' not in sub_defaults:
+    sub_defaults['maxSpawnDepth'] = 2  # main -> orchestrator -> worker
+if 'maxChildrenPerAgent' not in sub_defaults:
+    sub_defaults['maxChildrenPerAgent'] = 5
+if 'maxConcurrent' not in sub_defaults:
+    sub_defaults['maxConcurrent'] = 8
+if 'runTimeoutSeconds' not in sub_defaults:
+    sub_defaults['runTimeoutSeconds'] = 900
+if 'archiveAfterMinutes' not in sub_defaults:
+    sub_defaults['archiveAfterMinutes'] = 60
+
+tools_cfg = _ensure_dict(cfg, 'tools')
+
+# Agent-to-Agent 开关（用于跨 agent 会话工具目标控制）
+a2a_cfg = _ensure_dict(tools_cfg, 'agentToAgent')
+if 'enabled' not in a2a_cfg:
+    a2a_cfg['enabled'] = True
+a2a_allow = a2a_cfg.get('allow')
+if isinstance(a2a_allow, list):
+    a2a_cfg['allow'] = _uniq([*a2a_allow, *agent_ids])
+else:
+    a2a_cfg['allow'] = agent_ids
+
+# Session tools 可见性（默认 tree）
+sessions_cfg = _ensure_dict(tools_cfg, 'sessions')
+if 'visibility' not in sessions_cfg:
+    sessions_cfg['visibility'] = 'tree'
+
+# Subagent 工具策略模板（分层协作的最小默认）
+sub_tool_cfg = _ensure_dict(tools_cfg, 'subagents')
+# 兼容路径：部分环境仍读取 tools.subagents.maxSpawnDepth
+if 'maxSpawnDepth' not in sub_tool_cfg:
+    sub_tool_cfg['maxSpawnDepth'] = sub_defaults.get('maxSpawnDepth', 2)
+
+sub_tool_policy = _ensure_dict(sub_tool_cfg, 'tools')
+default_subagent_allow = [
+    'group:fs',
+    'group:runtime',
+    'group:web',
+    'group:memory',
+    'session_status',
+    # depth-1 orchestrator needs these; depth policy still clamps leaf workers
+    'sessions_spawn',
+    'subagents',
+    'sessions_list',
+    'sessions_history',
+]
+allow = sub_tool_policy.get('allow')
+if not isinstance(allow, list):
+    sub_tool_policy['allow'] = default_subagent_allow
+
+deny = sub_tool_policy.get('deny')
+if isinstance(deny, list):
+    sub_tool_policy['deny'] = _uniq([*deny, 'gateway', 'cron', 'sessions_send'])
+else:
+    sub_tool_policy['deny'] = ['gateway', 'cron', 'sessions_send']
 
 agents_cfg['list'] = agents_list
 cfg_path.write_text(json.dumps(cfg, ensure_ascii=False, indent=2))
-print(f'Done: {added} agents added')
+print(f'Done: {added} agents added, {updated} agents updated')
 PYEOF
 
   log "Agents 注册完成"

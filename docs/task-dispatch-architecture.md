@@ -465,6 +465,31 @@ _STATE_AGENT_MAP = {
 }
 ```
 
+#### OpenClaw 新版调用规范（2026+）
+
+为了兼容新版本，Agent-to-Agent 建议统一采用 `sessions_spawn`，并显式携带 `agentId`。  
+`sessions_send`、`subagents steer`、`exec: openclaw agent ...` 不再作为 Agent 内部协作主路径。
+
+最小配置清单：
+
+1. 在 `openclaw.json` 注册所有参与协作的 Agent（`agents.list`）。
+2. 为发起方配置 `subagents.allowAgents` 白名单（如 `zhongshu -> menxia/shangshu`）。
+3. 在 Agent 提示词中统一约束调用方式：`sessions_spawn + agentId`。
+4. 多层级嵌套协作时，按需调高 `tools.subagents.maxSpawnDepth`。
+5. 为深层 subagent 配置 `tools.subagents.tools` 分层策略，避免调度层和执行层工具权限混乱。
+
+典型调用：
+
+```json
+{
+  "tool": "sessions_spawn",
+  "input": {
+    "agentId": "menxia",
+    "task": "请审议中书省方案并给出准奏/封驳意见"
+  }
+}
+```
+
 #### 权限检查机制（代码层面）
 
 在 `dispatch_for_state()` 之外，还有一套防御性的权限检查：

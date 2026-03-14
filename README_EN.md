@@ -210,6 +210,10 @@ The installer automatically:
 - Initializes data directory + first sync
 - Restarts Gateway
 
+> Compatibility note (newer OpenClaw): for Agent-to-Agent calls, use `sessions_spawn` with explicit `agentId`.  
+> Ensure caller's `subagents.allowAgents` includes the target agent.
+> For multi-hop chains, tune `tools.subagents.maxSpawnDepth` and per-level `tools.subagents.tools`.
+
 ### Launch
 
 ```bash
