@@ -545,6 +545,13 @@ export default function TemplatePanel() {
                   ⏳ 议政处理中，请稍候…
                 </div>
               )}
+              {discussResult?.roundRunning && discussResult?.speakingNow?.agentLabel && (
+                <div style={{ fontSize: 12, color: 'var(--acc)', marginBottom: 10 }}>
+                  🔄 正在发言：第{discussResult.speakingNow.round || '?'}轮 · 第
+                  {discussResult.speakingNow.turn || '?'}位/{discussResult.speakingNow.totalTurns || '?'} ·
+                  {discussResult.speakingNow.agentLabel}
+                </div>
+              )}
 
               {discussResult?.topic && (
                 <div
@@ -643,18 +650,21 @@ export default function TemplatePanel() {
                   <div
                     key={`${x.round}-${x.agentId}-${i}`}
                     style={{
-                      border: x.error ? '1px solid #ff7d7d66' : '1px solid var(--line)',
+                      border: x.status === 'speaking' ? '1px solid #4da3ff66' : x.error ? '1px solid #ff7d7d66' : '1px solid var(--line)',
                       borderRadius: 8,
                       padding: 8,
                       marginBottom: 8,
-                      background: x.error ? '#ff7d7d12' : 'var(--panel)',
+                      background: x.status === 'speaking' ? '#4da3ff12' : x.error ? '#ff7d7d12' : 'var(--panel)',
                     }}
                   >
                     <div style={{ fontWeight: 700, marginBottom: 4 }}>
                       第{x.round}轮 · 第{x.turn || '?'}位/{x.totalTurns || '?'} · {x.agentLabel}
+                      {x.status === 'speaking' && <span style={{ marginLeft: 8, color: '#4da3ff' }}>（发言中）</span>}
                       {x.error && <span style={{ marginLeft: 8, color: '#ff7d7d' }}>（发言降级）</span>}
                     </div>
-                    <div style={{ whiteSpace: 'pre-wrap', lineHeight: 1.5, fontSize: 12 }}>{x.reply}</div>
+                    <div style={{ whiteSpace: 'pre-wrap', lineHeight: 1.5, fontSize: 12 }}>
+                      {x.reply || (x.status === 'speaking' ? '……' : '（暂无内容）')}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -682,10 +692,20 @@ export default function TemplatePanel() {
                 </button>
                 {discussResult?.status === 'ongoing' && (
                   <>
-                    <button type="button" className="btn btn-g" onClick={continueCourtDiscuss} disabled={discussLoading}>
+                    <button
+                      type="button"
+                      className="btn btn-g"
+                      onClick={continueCourtDiscuss}
+                      disabled={discussLoading || Boolean(discussResult?.roundRunning)}
+                    >
                       继续一轮
                     </button>
-                    <button type="button" className="tpl-go" onClick={finalizeCourtDiscuss} disabled={discussLoading}>
+                    <button
+                      type="button"
+                      className="tpl-go"
+                      onClick={finalizeCourtDiscuss}
+                      disabled={discussLoading || Boolean(discussResult?.roundRunning)}
+                    >
                       形成结论
                     </button>
                     <button

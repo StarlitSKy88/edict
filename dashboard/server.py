@@ -1045,6 +1045,7 @@ def _build_court_response(session, message=''):
         'linkedTaskId': session.get('linkedTaskId', ''),
         'roundRunning': bool(session.get('roundRunning', False)),
         'currentRound': int(session.get('currentRound') or 0),
+        'speakingNow': session.get('speakingNow') or {},
         'emperorNotes': session.get('emperorNotes', [])[-10:],
         'discussion': (session.get('discussion') or [])[-80:],
         'final': session.get('final'),
@@ -1218,6 +1219,33 @@ def _start_court_round_async(session_id):
                 emperor_notes = current.get('emperorNotes') or []
                 latest_note = emperor_notes[-1].get('text', '') if emperor_notes else ''
                 label = _agent_label(aid)
+                entry_id = f'cd-entry-{uuid.uuid4().hex[:12]}'
+
+                def _append_pending_entry(s):
+                    s.setdefault('discussion', []).append({
+                        'entryId': entry_id,
+                        'round': next_round,
+                        'turn': idx + 1,
+                        'totalTurns': len(selected),
+                        'agentId': aid,
+                        'agentLabel': label,
+                        'reply': '',
+                        'status': 'speaking',
+                        'error': False,
+                        'at': now_iso(),
+                    })
+                    s['speakingNow'] = {
+                        'round': next_round,
+                        'turn': idx + 1,
+                        'totalTurns': len(selected),
+                        'agentId': aid,
+                        'agentLabel': label,
+                    }
+                    s['updatedAt'] = now_iso()
+                    s['message'] = f'第 {next_round} 轮进行中：{label} 正在发言（{idx + 1}/{len(selected)}）'
+
+                _update_court_session(session_id, _append_pending_entry)
+
                 prompt = (
                     f'你正在参与御前议政讨论，角色是「{label}」。\n'
                     f'议题：{topic}\n'
@@ -1234,7 +1262,7 @@ def _start_court_round_async(session_id):
                 reply = ''
                 error_text = ''
                 try:
-                    reply = _run_agent_sync(aid, prompt, timeout_sec=120)
+                    reply = _run_agent_sync(aid, prompt, timeout_sec=60)
                 except Exception as e:
                     error_text = _friendly_agent_error(str(e))
                     reply = (
@@ -1242,28 +1270,37 @@ def _start_court_round_async(session_id):
                         f'【建议】请皇上选择“继续一轮”或调整参与大臣后再议。'
                     )
 
-                entry = {
-                    'round': next_round,
-                    'turn': idx + 1,
-                    'totalTurns': len(selected),
-                    'agentId': aid,
-                    'agentLabel': label,
-                    'reply': reply[:4000],
-                    'error': bool(error_text),
-                    'at': now_iso(),
-                }
-
-                def _append_entry(s):
-                    s.setdefault('discussion', []).append(entry)
+                def _update_entry_done(s):
+                    updated = False
+                    for item in s.get('discussion', []):
+                        if item.get('entryId') == entry_id:
+                            item['reply'] = reply[:4000]
+                            item['error'] = bool(error_text)
+                            item['status'] = 'error' if error_text else 'done'
+                            updated = True
+                            break
+                    if not updated:
+                        s.setdefault('discussion', []).append({
+                            'entryId': entry_id,
+                            'round': next_round,
+                            'turn': idx + 1,
+                            'totalTurns': len(selected),
+                            'agentId': aid,
+                            'agentLabel': label,
+                            'reply': reply[:4000],
+                            'error': bool(error_text),
+                            'status': 'error' if error_text else 'done',
+                            'at': now_iso(),
+                        })
                     s['updatedAt'] = now_iso()
                     s['message'] = f'第 {next_round} 轮进行中：{label} 已发言（{idx + 1}/{len(selected)}）'
 
-                _update_court_session(session_id, _append_entry)
+                _update_court_session(session_id, _update_entry_done)
 
             final_session = _load_court_session(session_id) or {}
             round_entries = [
                 x for x in (final_session.get('discussion') or [])
-                if int(x.get('round') or 0) == next_round
+                if int(x.get('round') or 0) == next_round and (x.get('status') in ('done', 'error') or x.get('reply'))
             ]
             moderator_id = final_session.get('moderatorId') or _pick_moderator(selected)
             moderator_label = _agent_label(moderator_id)
@@ -1320,6 +1357,7 @@ def _start_court_round_async(session_id):
                 s['rounds'] = next_round
                 s['suggestedAction'] = 'finalize' if assessment.get('recommend_stop') else 'next'
                 s['roundRunning'] = False
+                s['speakingNow'] = {}
                 s['updatedAt'] = now_iso()
                 s['message'] = (
                     f'第 {next_round} 轮结束，{moderator_label}建议'
@@ -1332,6 +1370,7 @@ def _start_court_round_async(session_id):
                 session_id,
                 lambda s: s.update({
                     'roundRunning': False,
+                    'speakingNow': {},
                     'updatedAt': now_iso(),
                     'message': f'议政轮次执行失败：{_friendly_agent_error(str(e))}',
                 }),
@@ -1456,6 +1495,7 @@ def handle_court_discuss(action='start', topic='', participants=None, session_id
             'rounds': 0,
             'currentRound': 0,
             'roundRunning': False,
+            'speakingNow': {},
             'discussion': [],
             'assessments': [],
             'final': None,
@@ -1482,7 +1522,7 @@ def handle_court_discuss(action='start', topic='', participants=None, session_id
     if action == 'status':
         session['updatedAt'] = now_iso()
         _upsert_court_session(session)
-        return _build_court_response(session, '会话状态已返回')
+        return _build_court_response(session, session.get('message', '会话状态已返回'))
 
     if action == 'next':
         if session.get('status') in ('done', 'handoffed', 'terminated'):

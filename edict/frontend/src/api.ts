@@ -497,6 +497,7 @@ export interface CourtDiscussPayload {
 }
 
 export interface CourtDiscussEntry {
+  entryId?: string;
   round: number;
   turn?: number;
   totalTurns?: number;
@@ -504,6 +505,7 @@ export interface CourtDiscussEntry {
   agentLabel: string;
   reply: string;
   error?: boolean;
+  status?: 'speaking' | 'done' | 'error';
   at: string;
 }
 
@@ -534,6 +536,15 @@ export interface CourtDiscussAssessment {
 export interface CourtDiscussResult extends ActionResult {
   sessionId?: string;
   status?: 'ongoing' | 'done' | 'handoffed' | 'terminated';
+  roundRunning?: boolean;
+  currentRound?: number;
+  speakingNow?: {
+    round?: number;
+    turn?: number;
+    totalTurns?: number;
+    agentId?: string;
+    agentLabel?: string;
+  };
   topic?: string;
   participants?: string[];
   rounds?: number;
