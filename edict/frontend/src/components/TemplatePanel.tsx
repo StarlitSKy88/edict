@@ -214,19 +214,34 @@ export default function TemplatePanel() {
       toast('请先开始议政', 'err');
       return;
     }
-    if (!confirm('确认结束讨论并生成最终旨意草案？')) return;
+    if (!confirm('确认皇上拍板结束，并立即自动下旨进入执行阶段？')) return;
     setDiscussLoading(true);
     try {
-      const r = await api.courtDiscuss({
+      const finalized = await api.courtDiscuss({
         action: 'finalize',
         sessionId: discussSessionId,
         emperorNote: emperorNote.trim(),
       });
-      setDiscussResult(r);
-      if (r.ok) {
-        toast('✅ 已结束讨论并生成草案', 'ok');
+      setDiscussResult(finalized);
+      if (!finalized.ok) {
+        toast(finalized.error || '结束讨论失败', 'err');
+        return;
+      }
+
+      const handed = await api.courtDiscuss({
+        action: 'handoff',
+        sessionId: discussSessionId,
+        emperorNote: emperorNote.trim(),
+        force: true,
+      });
+      setDiscussResult(handed);
+      if (handed.ok) {
+        setDiscussWindowOpen(false);
+        setEmperorNote('');
+        toast(`✅ 皇上已拍板并下旨：${handed.linkedTaskId || '已进入办理流程'}`, 'ok');
+        loadAll();
       } else {
-        toast(r.error || '结束讨论失败', 'err');
+        toast(handed.error || '自动下旨失败，请手动交办', 'err');
       }
     } catch {
       toast('⚠️ 服务器连接失败', 'err');
@@ -754,7 +769,7 @@ export default function TemplatePanel() {
                       onClick={finalizeCourtDiscuss}
                       disabled={discussLoading || Boolean(discussResult?.roundRunning)}
                     >
-                      形成结论
+                      拍板并执行
                     </button>
                     <button
                       type="button"
