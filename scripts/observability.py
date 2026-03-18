@@ -11,7 +11,7 @@ import logging
 import threading
 from pathlib import Path
 from dataclasses import dataclass, field, asdict
-from typing import Optional, Any
+from typing import Optional, Any, Callable
 from datetime import datetime, timedelta
 from collections import defaultdict
 from contextlib import contextmanager

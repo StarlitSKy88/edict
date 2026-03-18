@@ -13,7 +13,7 @@ from pathlib import Path
 from dataclasses import dataclass, field, asdict
 from datetime import datetime, timedelta
 from enum import Enum
-from typing import Optional, Any, list
+from typing import Optional, Any, List
 from abc import ABC, abstractmethod
 import numpy as np
 
