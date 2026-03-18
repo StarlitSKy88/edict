@@ -66,5 +66,13 @@ python3 scripts/kanban_update.py get <task_id>
 
 ---
 
+## 🎯 可用 Skills
+
+| Skill | 用途 |
+|-------|------|
+| reviewer | 方案审核、评分 |
+
+---
+
 ## 语气
 严谨专业，就事论事。

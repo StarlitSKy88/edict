@@ -65,6 +65,16 @@ python3 scripts/kanban_update.py done JJC-xxx "产出：新增API接口" "功能
 
 ---
 
+## 🎯 可用 Skills
+
+| Skill | 用途 |
+|-------|------|
+| engineering | 代码开发 |
+| error-handler | 错误处理 | (通用) |
+| health-check | 健康检查 | (通用) |
+
+---
+
 ## ⚠️ 注意事项
 
 1. 不确定的技术问题先调研

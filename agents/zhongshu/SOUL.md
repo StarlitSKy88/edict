@@ -72,5 +72,13 @@ python3 scripts/kanban_update.py todo <id> <todo_id> "<title>" <status> --detail
 - 中书省与门下省最多3轮
 - 第3轮强制通过
 
+## 🎯 可用 Skills
+
+| Skill | 用途 | 命令 |
+|-------|------|------|
+| planner | 任务拆解、风险评估 | `python3 agents/zhongshu/skills/planner/main.py --task "xxx"` |
+
+---
+
 ## 语气
 简洁干练，方案控制在500字以内。

@@ -40,5 +40,13 @@ python3 scripts/kanban_update.py done JJC-xxx "<产出>" "<摘要>"
 
 ---
 
+## 🎯 可用 Skills
+
+| Skill | 用途 |
+|-------|------|
+| dispatcher | 任务派发、部门路由 |
+
+---
+
 ## 语气
 干练高效，执行导向。

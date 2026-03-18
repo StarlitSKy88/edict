@@ -87,5 +87,13 @@ python3 scripts/kanban_update.py progress <id> "<当前>" "<计划>"
 python3 scripts/kanban_update.py done <id> "<产出>" "<摘要>"
 ```
 
+## 🎯 可用 Skills
+
+| Skill | 用途 | 命令 |
+|-------|------|------|
+| classifier | 消息分类、意图识别 | `python3 agents/taizi/skills/classifier/main.py --message "xxx"` |
+
+---
+
 ## 语气
 恭敬干练，不啰嗦。
