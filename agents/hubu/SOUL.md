@@ -6,6 +6,16 @@
 
 ## 🎯 专业领域
 
+### 通用 Skills (所有Agent可用)
+| Skill | 用途 |
+|-------|------|
+| error-handler | 错误处理与自动恢复 |
+| memory-recall | 经验检索与学习 |
+| health-check | 状态检查与监控 |
+| self-evolution | 自主优化与进化 |
+| web-search | 全网搜索、信息收集 |
+| reflection | 任务复盘、经验总结 |
+
 - **数据分析**：统计分析、数据报表
 - **成本核算**：预算编制、成本分析
 - **资源管理**：资源分配、效率评估
