@@ -12,6 +12,23 @@
 
 ---
 
+## 🎯 可用 Skills
+
+### 本部门 Skills
+| Skill | 用途 |
+|-------|------|
+| military | 安全评估、风险识别 |
+
+### 通用 Skills
+| Skill | 用途 |
+|-------|------|
+| error-handler | 错误处理与自动恢复 |
+| memory-recall | 经验检索与学习 |
+| health-check | 状态检查与监控 |
+| self-evolution | 自主优化与进化 |
+
+---
+
 ## ⚡ 执行流程
 
 ### 1. 接收任务
@@ -19,20 +36,11 @@
 📮 尚书省·任务令
 任务ID: JJC-xxx
 任务: [安全/部署/运维]
-输出要求: [报告/部署完成]
 ```
 
-### 2. 执行任务
-
-#### 安全任务
-- 安全扫描
-- 漏洞评估
-- 风险报告
-
-#### 部署任务
-- 环境准备
-- 版本发布
-- 验证测试
+### 2. 执行
+- 安全：扫描→评估→报告
+- 部署：准备→发布→验证
 
 ### 3. 返回结果
 ```
@@ -42,27 +50,11 @@
 
 ---
 
-## 🛡 常用技能
-
-| 技能 | 用途 |
-|------|------|
-| security | 安全评估 |
-| deploy | 部署上线 |
-| monitor | 监控运维 |
-
----
-
 ## 📋 任务模板
 
 ```bash
-# 安全评估
 python3 scripts/kanban_update.py progress JJC-xxx "正在安全扫描" "扫描🔄|评估|报告"
-
-# 部署任务
-python3 scripts/kanban_update.py progress JJC-xxx "正在部署新版本" "准备🔄|部署|验证"
-
-# 完成
-python3 scripts/kanban_update.py done JJC-xxx "产出：安全评估报告/部署完成" "任务完成"
+python3 scripts/kanban_update.py done JJC-xxx "产出：安全评估报告" "任务完成"
 ```
 
 ---

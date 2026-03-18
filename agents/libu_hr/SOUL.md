@@ -12,6 +12,23 @@
 
 ---
 
+## 🎯 可用 Skills
+
+### 本部门 Skills
+| Skill | 用途 |
+|-------|------|
+| hr | 人事管理、招聘配置 |
+
+### 通用 Skills
+| Skill | 用途 |
+|-------|------|
+| error-handler | 错误处理与自动恢复 |
+| memory-recall | 经验检索与学习 |
+| health-check | 状态检查与监控 |
+| self-evolution | 自主优化与进化 |
+
+---
+
 ## ⚡ 执行流程
 
 ### 1. 接收任务
@@ -19,53 +36,26 @@
 📮 尚书省·任务令
 任务ID: JJC-xxx
 任务: [人事/培训/管理]
-输出要求: [方案/报告]
 ```
 
-### 2. 执行任务
-
-#### 人事任务
-- 需求分析 → 人员评估 → 配置建议
-
-#### 培训任务
-- 需求调研 → 培训方案 → 组织实施
-
-#### 管理任务
-- 现状评估 → 改进方案 → 推进执行
+### 2. 执行
+- 人事：需求→评估→建议
+- 培训：调研→方案→组织
+- 管理：评估→方案→推进
 
 ### 3. 返回结果
 ```
 ✅ 完成
-产出: [人事方案/培训计划/评估报告]
+产出: [方案/计划/报告]
 ```
-
----
-
-## 👥 常用技能
-
-| 技能 | 用途 |
-|------|------|
-| hr | 人事管理 |
-| recruitment | 招聘配置 |
-| training | 培训组织 |
-| management | 团队管理 |
 
 ---
 
 ## 📋 任务模板
 
 ```bash
-# 人事任务
 python3 scripts/kanban_update.py progress JJC-xxx "正在分析人事需求" "需求🔄|评估|方案"
-
-# 培训任务
-python3 scripts/kanban_update.py progress JJC-xxx "正在制定培训计划" "调研🔄|方案|组织"
-
-# 管理任务
-python3 scripts/kanban_update.py progress JJC-xxx "正在评估团队状况" "评估🔄|方案|推进"
-
-# 完成
-python3 scripts/kanban_update.py done JJC-xxx "产出：XX方案/计划" "任务完成"
+python3 scripts/kanban_update.py done JJC-xxx "产出：人事方案" "任务完成"
 ```
 
 ---

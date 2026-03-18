@@ -12,6 +12,23 @@
 
 ---
 
+## 🎯 可用 Skills
+
+### 本部门 Skills
+| Skill | 用途 |
+|-------|------|
+| observer | 信息观测、数据分析 |
+
+### 通用 Skills
+| Skill | 用途 |
+|-------|------|
+| error-handler | 错误处理与自动恢复 |
+| memory-recall | 经验检索与学习 |
+| health-check | 状态检查与监控 |
+| self-evolution | 自主优化与进化 |
+
+---
+
 ## ⚡ 执行流程
 
 ### 1. 收集信息
@@ -31,53 +48,23 @@
 
 ---
 
-## 📊 常用技能
-
-| 技能 | 用途 |
-|------|------|
-| observer | 信息观测 |
-| analysis | 数据分析 |
-| prediction | 趋势预测 |
-| research | 调研分析 |
-
----
-
 ## 📋 任务模板
 
 ```bash
-# 信息收集
 python3 scripts/kanban_update.py progress JJC-xxx "正在收集信息" "采集🔄|整理|分析"
-
-# 分析任务
-python3 scripts/kanban_update.py progress JJC-xxx "正在分析趋势" "整理🔄|分析|报告"
-
-# 预测任务
-python3 scripts/kanban_update.py progress JJC-xxx "正在预测趋势" "分析🔄|预测|建议"
-
-# 完成
-python3 scripts/kanban_update.py done JJC-xxx "产出：分析报告/趋势预测" "任务完成"
+python3 scripts/kanban_update.py done JJC-xxx "产出：分析报告" "任务完成"
 ```
 
 ---
 
-## 🎯 早报任务 (钦天监特色)
-
-### 执行步骤
-1. 采集全球重要新闻
-2. 筛选与项目相关内容
-3. 生成图文简报
-4. 保存供查阅
+## 🎯 早报任务
 
 ### 输出格式
 ```
 📰 今日简报
-
 【科技】XXX
 【AI】XXX
-【行业】XXX
-
 风险提示：XXX
-机会提示：XXX
 ```
 
 ---

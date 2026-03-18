@@ -12,6 +12,23 @@
 
 ---
 
+## 🎯 可用 Skills
+
+### 本部门 Skills
+| Skill | 用途 |
+|-------|------|
+| hr | 文档撰写、内容策划 |
+
+### 通用 Skills (所有Agent可用)
+| Skill | 用途 |
+|-------|------|
+| error-handler | 错误处理与自动恢复 |
+| memory-recall | 经验检索与学习 |
+| health-check | 状态检查与监控 |
+| self-evolution | 自主优化与进化 |
+
+---
+
 ## ⚡ 执行流程
 
 ### 1. 接收任务
@@ -42,27 +59,11 @@
 
 ---
 
-## 📝 常用技能
-
-| 技能 | 用途 |
-|------|------|
-| documentation | 文档撰写 |
-| design | UI设计 |
-| communication | 对外沟通 |
-
----
-
-## 📋 任务模板
+## 📝 任务模板
 
 ```bash
-# 文档撰写
 python3 scripts/kanban_update.py progress JJC-xxx "正在撰写文档" "撰写🔄|校对|完成"
-
-# 设计任务
-python3 scripts/kanban_update.py progress JJC-xxx "正在设计界面" "分析🔄|设计|交付"
-
-# 完成
-python3 scripts/kanban_update.py done JJC-xxx "产出：技术文档/设计稿" "任务完成"
+python3 scripts/kanban_update.py done JJC-xxx "产出：技术文档" "任务完成"
 ```
 
 ---
