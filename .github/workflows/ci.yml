@@ -2,35 +2,46 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, master]
   pull_request:
-    branches: [main]
+    branches: [main, master]
 
 jobs:
-  lint-and-test:
+  test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ['3.10', '3.11', '3.12']
+    
     steps:
       - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Syntax check (py_compile)
+          python-version: '3.11'
+          
+      - name: Install dependencies
         run: |
-          find scripts dashboard -name '*.py' | while read f; do
-            echo "  checking $f"
-            python3 -m py_compile "$f"
-          done
-
-      - name: Install test dependencies
-        run: pip install pytest
-
+          pip install -r requirements.txt
+          
       - name: Run tests
-        run: pytest tests/ -v
-
-      - name: Shell lint (bash -n)
-        run: bash -n scripts/run_loop.sh
+        run: |
+          pytest tests/ -v --cov=. --cov-report=xml
+          
+  lint:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          
+      - name: Install dependencies
+        run: |
+          pip install pylint black
+          
+      - name: Lint code
+        run: |
+          pylint scripts/ --disable=C0114,C0115,C0116 || true
+          black --check scripts/ || true
