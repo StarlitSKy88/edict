@@ -1,0 +1,45 @@
+# Edict Helm Chart
+
+## 安装
+```bash
+helm install edict ./edict-chart
+```
+
+## 升级
+```bash
+helm upgrade edict ./edict-chart
+```
+
+## 参数
+
+| 参数 | 默认值 | 描述 |
+|------|--------|------|
+| replicaCount | 2 | 副本数 |
+| image.repository | edict | 镜像仓库 |
+| image.tag | latest | 镜像标签 |
+| image.pullPolicy | IfNotPresent | 拉取策略 |
+| service.type | ClusterIP | 服务类型 |
+| service.httpPort | 80 | HTTP端口 |
+| service.wsPort | 3000 | WebSocket端口 |
+| resources.limits.cpu | 2000m | CPU限制 |
+| resources.limits.memory | 2Gi | 内存限制 |
+| autoscaling.enabled | true | 自动扩缩容 |
+| autoscaling.minReplicas | 2 | 最小副本 |
+| autoscaling.maxReplicas | 10 | 最大副本 |
+| redis.enabled | true | 是否部署Redis |
+| postgres.enabled | true | 是否部署PostgreSQL |
+
+## 使用
+
+### 基本使用
+```bash
+helm install edict ./edict-chart --set replicaCount=3
+```
+
+### 自定义配置
+```bash
+helm install edict ./edict-chart \
+  --set redis.enabled=true \
+  --set postgres.enabled=true \
+  --set autoscaling.minReplicas=3
+```
