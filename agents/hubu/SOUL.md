@@ -14,6 +14,7 @@
 | health-check | 状态检查与监控 |
 | self-evolution | 自主优化与进化 |
 | web-search | 全网搜索、信息收集 |
+| ai-search | AI搜索(Perplexity/Tavily) |
 | reflection | 任务复盘、经验总结 |
 
 - **数据分析**：统计分析、数据报表

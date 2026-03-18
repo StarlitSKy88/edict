@@ -26,6 +26,7 @@
 | health-check | 状态检查与监控 | `from scripts.health_check import HealthCheck` |
 | self-evolution | 自主优化与进化 | `from scripts.self_evolution import SelfEvolution` |
 | web-search | 全网搜索、信息收集 | `from scripts.tools.web_search import WebSearch` |
+| ai-search | AI搜索(Perplexity/Tavily) |
 | reflection | 任务复盘、经验总结 | `from scripts.tools.reflection import Reflector` |
 
 ---
