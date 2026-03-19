@@ -269,17 +269,17 @@ open http://127.0.0.1:7891
 
 | Dept | Agent ID | Role | Expertise |
 |------|----------|------|-----------|
-| 👑 **Crown Prince** | `taizi` | Triage, summarize | Chat detection, intent extraction |
-| 📜 **Planning** | `zhongshu` | Receive, plan, decompose | Requirements, architecture |
-| 🔍 **Review** | `menxia` | Audit, gatekeep, veto | Quality, risk, standards |
-| 📮 **Dispatch** | `shangshu` | Assign, coordinate, collect | Scheduling, tracking |
-| 💰 **Finance** | `hubu` | Data, resources, accounting | Data processing, reports |
-| 📝 **Documentation** | `libu` | Docs, standards, reports | Tech writing, API docs |
-| ⚔️ **Engineering** | `bingbu` | Code, algorithms, checks | Development, code review |
-| ⚖️ **Compliance** | `xingbu` | Security, compliance, audit | Security scanning |
-| 🔧 **Infrastructure** | `gongbu` | CI/CD, deploy, tooling | Docker, pipelines |
-| 📋 **HR** | `libu_hr` | Agent management, training | Registration, permissions |
-| 🌅 **Briefing** | `zaochao` | Daily briefing, news | Scheduled reports, summaries |
+| 👑 **Crown Prince** | `pope` | Triage, summarize | Chat detection, intent extraction |
+| 📜 **Planning** | `cardinal` | Receive, plan, decompose | Requirements, architecture |
+| 🔍 **Review** | `cardinal_office` | Audit, gatekeep, veto | Quality, risk, standards |
+| 📮 **Dispatch** | `bishop` | Assign, coordinate, collect | Scheduling, tracking |
+| 💰 **Finance** | `treasury` | Data, resources, accounting | Data processing, reports |
+| 📝 **Documentation** | `ceremony` | Docs, standards, reports | Tech writing, API docs |
+| ⚔️ **Engineering** | `knights` | Code, algorithms, checks | Development, code review |
+| ⚖️ **Compliance** | `inquisition` | Security, compliance, audit | Security scanning |
+| 🔧 **Infrastructure** | `guild` | CI/CD, deploy, tooling | Docker, pipelines |
+| 📋 **HR** | `personnel` | Agent management, training | Registration, permissions |
+| 🌅 **Briefing** | `astrologer` | Daily briefing, news | Scheduled reports, summaries |
 
 ### Permission Matrix
 
@@ -306,14 +306,14 @@ Emperor → Prince Triage → Planning → Review → Assigned → Executing →
 ```
 edict/
 ├── agents/                     # 12 agent personality templates (SOUL.md)
-│   ├── taizi/                  #   Crown Prince (triage)
-│   ├── zhongshu/               #   Planning Dept
-│   ├── menxia/                 #   Review Dept
-│   ├── shangshu/               #   Dispatch Dept
-│   ├── hubu/ libu/ bingbu/     #   Finance / Docs / Engineering
-│   ├── xingbu/ gongbu/         #   Compliance / Infrastructure
-│   ├── libu_hr/                #   HR Dept
-│   └── zaochao/                #   Morning Briefing
+│   ├── pope/                  #   Crown Prince (triage)
+│   ├── cardinal/               #   Planning Dept
+│   ├── cardinal_office/                 #   Review Dept
+│   ├── bishop/               #   Dispatch Dept
+│   ├── treasury/ ceremony/ knights/     #   Finance / Docs / Engineering
+│   ├── inquisition/ guild/         #   Compliance / Infrastructure
+│   ├── personnel/                #   HR Dept
+│   └── astrologer/                #   Morning Briefing
 ├── dashboard/
 │   ├── dashboard.html          # Dashboard (single file, zero deps, works out of the box)
 │   ├── dist/                   # Pre-built React frontend (included in Docker image)

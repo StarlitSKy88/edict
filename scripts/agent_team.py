@@ -24,16 +24,16 @@ TEAM_DIR.mkdir(parents=True, exist_ok=True)
 # ==================== Agent定义 ====================
 class AgentRole(Enum):
     """Agent角色"""
-    TAIZI = "太子"           # 消息分拣
-    ZHONGSHU = "中书省"       # 规划
-    MENXIA = "门下省"         # 审核
-    SHANGSHU = "尚书省"       # 调度
-    HUBU = "户部"             # 财务
-    LIBU = "吏部"             # 人事
-    BINGBU = "兵部"           # 安全
-    XINGBU = "刑部"           # 法务
-    GONGBU = "工部"           # 技术
-    ZAOCHAO = "钦天监"        # 观测
+    TAIZI = "教皇"           # 消息分拣
+    ZHONGSHU = "红衣主教团"       # 规划
+    MENXIA = "枢机处"         # 审核
+    SHANGSHU = "主教团"       # 调度
+    HUBU = "财政部"             # 财务
+    LIBU = "人事部"             # 人事
+    BINGBU = "骑士团"           # 安全
+    XINGBU = "宗教裁判所"           # 法务
+    GONGBU = "工匠行会"           # 技术
+    ZAOCHAO = "占星术士"        # 观测
 
 @dataclass
 class AgentState:
@@ -90,16 +90,16 @@ class AgentTeam:
     def _init_agents(self):
         """初始化Agent"""
         agent_configs = {
-            "taizi": AgentState("太子", "太子", capabilities=["classify", "reply", "create_task"]),
-            "zhongshu": AgentState("中书省", "中书令", capabilities=["plan", "delegate", "review"]),
-            "menxia": AgentState("门下省", "门下侍中", capabilities=["review", "approve", "reject"]),
-            "shangshu": AgentState("尚书省", "尚书令", capabilities=["dispatch", "coordinate", "monitor"]),
-            "hubu": AgentState("户部", "户部尚书", capabilities=["finance", "budget", "account"]),
-            "libu": AgentState("吏部", "吏部尚书", capabilities=["hr", "recruit", "train"]),
-            "bingbu": AgentState("兵部", "兵部尚书", capabilities=["security", "risk", "compliance"]),
-            "xingbu": AgentState("刑部", "刑部尚书", capabilities=["legal", "audit", "review"]),
-            "gongbu": AgentState("工部", "工部尚书", capabilities=["tech", "develop", "deploy"]),
-            "zaochao": AgentState("钦天监", "钦天监正", capabilities=["analyze", "predict", "observe"]),
+            "pope": AgentState("教皇", "教皇", capabilities=["classify", "reply", "create_task"]),
+            "cardinal": AgentState("红衣主教团", "中书令", capabilities=["plan", "delegate", "review"]),
+            "cardinal_office": AgentState("枢机处", "门下侍中", capabilities=["review", "approve", "reject"]),
+            "bishop": AgentState("主教团", "尚书令", capabilities=["dispatch", "coordinate", "monitor"]),
+            "treasury": AgentState("财政部", "财政部尚书", capabilities=["finance", "budget", "account"]),
+            "ceremony": AgentState("人事部", "人事部尚书", capabilities=["hr", "recruit", "train"]),
+            "knights": AgentState("骑士团", "骑士团尚书", capabilities=["security", "risk", "compliance"]),
+            "inquisition": AgentState("宗教裁判所", "宗教裁判所尚书", capabilities=["legal", "audit", "review"]),
+            "guild": AgentState("工匠行会", "工匠行会尚书", capabilities=["tech", "develop", "deploy"]),
+            "astrologer": AgentState("占星术士", "占星术士正", capabilities=["analyze", "predict", "observe"]),
         }
         
         for agent_id, state in agent_configs.items():

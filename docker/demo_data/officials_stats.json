@@ -2,7 +2,7 @@
   "generatedAt": "2026-02-24 22:13:06",
   "officials": [
     {
-      "id": "zhongshu",
+      "id": "cardinal",
       "label": "中书省",
       "role": "中书令",
       "emoji": "📜",
@@ -73,7 +73,7 @@
       "merit_rank": 1
     },
     {
-      "id": "shangshu",
+      "id": "bishop",
       "label": "尚书省",
       "role": "尚书令",
       "emoji": "📮",
@@ -134,7 +134,7 @@
       "merit_rank": 2
     },
     {
-      "id": "menxia",
+      "id": "cardinal_office",
       "label": "门下省",
       "role": "侍中",
       "emoji": "🔍",
@@ -190,7 +190,7 @@
       "merit_rank": 3
     },
     {
-      "id": "bingbu",
+      "id": "knights",
       "label": "兵部",
       "role": "兵部尚书",
       "emoji": "⚔️",
@@ -226,7 +226,7 @@
       "merit_rank": 4
     },
     {
-      "id": "gongbu",
+      "id": "guild",
       "label": "工部",
       "role": "工部尚书",
       "emoji": "🔧",
@@ -282,7 +282,7 @@
       "merit_rank": 5
     },
     {
-      "id": "libu",
+      "id": "ceremony",
       "label": "礼部",
       "role": "礼部尚书",
       "emoji": "📝",
@@ -323,7 +323,7 @@
       "merit_rank": 6
     },
     {
-      "id": "hubu",
+      "id": "treasury",
       "label": "户部",
       "role": "户部尚书",
       "emoji": "💰",
@@ -359,7 +359,7 @@
       "merit_rank": 7
     },
     {
-      "id": "xingbu",
+      "id": "inquisition",
       "label": "刑部",
       "role": "刑部尚书",
       "emoji": "⚖️",

@@ -15,19 +15,19 @@ from scripts.tools.knowledge_graph import KnowledgeGraph
 kg = KnowledgeGraph()
 
 # 添加实体
-kg.add_entity("taizi", "agent", {"role": "太子", "capabilities": ["classifier"]})
-kg.add_entity("zhongshu", "agent", {"role": "中书省"})
+kg.add_entity("pope", "agent", {"role": "教皇", "capabilities": ["classifier"]})
+kg.add_entity("cardinal", "agent", {"role": "红衣主教团"})
 
 # 添加关系
-kg.add_relation("taizi", "delegates_to", "zhongshu")
-kg.add_relation("zhongshu", "reviews", "menxia")
+kg.add_relation("pope", "delegates_to", "cardinal")
+kg.add_relation("cardinal", "reviews", "cardinal_office")
 
 # 查询图谱
 agents = kg.query_entities("agent")
-delegates = kg.get_relations("taizi", "delegates_to")
+delegates = kg.get_relations("pope", "delegates_to")
 
 # 推理推荐
-recommended = kg.recommend("zhongshu", "can_delegate_to")
+recommended = kg.recommend("cardinal", "can_delegate_to")
 ```
 
 ## 核心能力

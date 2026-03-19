@@ -246,12 +246,12 @@ OFFICIAL_SKILLS_HUB = {
 }
 
 SKILL_AGENT_MAPPING = {
-    'code_review': ('bingbu', 'xingbu', 'menxia'),
-    'api_design': ('bingbu', 'gongbu', 'menxia'),
-    'security_audit': ('xingbu', 'menxia'),
-    'data_analysis': ('hubu', 'menxia'),
-    'doc_generation': ('libu', 'menxia'),
-    'test_framework': ('gongbu', 'xingbu', 'menxia'),
+    'code_review': ('knights', 'inquisition', 'cardinal_office'),
+    'api_design': ('knights', 'guild', 'cardinal_office'),
+    'security_audit': ('inquisition', 'cardinal_office'),
+    'data_analysis': ('treasury', 'cardinal_office'),
+    'doc_generation': ('ceremony', 'cardinal_office'),
+    'test_framework': ('guild', 'inquisition', 'cardinal_office'),
 }
 
 
@@ -273,7 +273,7 @@ def import_official_hub(agent_ids: list) -> bool:
         # 确定目标 agents
         target_agents = agent_ids
         if not agent_ids:
-            target_agents = SKILL_AGENT_MAPPING.get(skill_name, ['menxia'])
+            target_agents = SKILL_AGENT_MAPPING.get(skill_name, ['cardinal_office'])
         
         print(f'\n📥 正在导入 skill: {skill_name}')
         print(f'   目标 agents: {", ".join(target_agents)}')

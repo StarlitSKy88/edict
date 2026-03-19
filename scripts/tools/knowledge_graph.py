@@ -129,26 +129,26 @@ class KnowledgeGraph:
         """初始化默认Agent关系"""
         # Agent实体
         agents = [
-            ("taizi", "agent", {"role": "太子", "function": "消息分拣"}),
-            ("zhongshu", "agent", {"role": "中书省", "function": "规划"}),
-            ("menxia", "agent", {"role": "门下省", "function": "审核"}),
-            ("shangshu", "agent", {"role": "尚书省", "function": "调度"}),
-            ("gongbu", "agent", {"role": "工部", "function": "技术"}),
-            ("hubu", "agent", {"role": "户部", "function": "财务"}),
-            ("bingbu", "agent", {"role": "兵部", "function": "安全"}),
-            ("xingbu", "agent", {"role": "刑部", "function": "合规"}),
+            ("pope", "agent", {"role": "教皇", "function": "消息分拣"}),
+            ("cardinal", "agent", {"role": "红衣主教团", "function": "规划"}),
+            ("cardinal_office", "agent", {"role": "枢机处", "function": "审核"}),
+            ("bishop", "agent", {"role": "主教团", "function": "调度"}),
+            ("guild", "agent", {"role": "工匠行会", "function": "技术"}),
+            ("treasury", "agent", {"role": "财政部", "function": "财务"}),
+            ("knights", "agent", {"role": "骑士团", "function": "安全"}),
+            ("inquisition", "agent", {"role": "宗教裁判所", "function": "合规"}),
         ]
         
         for aid, atype, props in agents:
             self.add_entity(aid, atype, props)
         
         # Agent关系
-        self.add_relation("taizi", "delegates_to", "zhongshu")
-        self.add_relation("zhongshu", "reviews", "menxia")
-        self.add_relation("menxia", "approves", "shangshu")
-        self.add_relation("shangshu", "dispatches", "gongbu")
-        self.add_relation("shangshu", "dispatches", "hubu")
-        self.add_relation("shangshu", "dispatches", "bingbu")
+        self.add_relation("pope", "delegates_to", "cardinal")
+        self.add_relation("cardinal", "reviews", "cardinal_office")
+        self.add_relation("cardinal_office", "approves", "bishop")
+        self.add_relation("bishop", "dispatches", "guild")
+        self.add_relation("bishop", "dispatches", "treasury")
+        self.add_relation("bishop", "dispatches", "knights")
         
         print("✅ 知识图谱初始化完成")
 
@@ -162,5 +162,5 @@ if __name__ == '__main__':
     for e in kg.query_entities("agent"):
         print(f"  {e.id}: {e.properties}")
     
-    print("\n=== 太子委派关系 ===")
-    print(kg.get_relations("taizi", "delegates_to"))
+    print("\n=== 教皇委派关系 ===")
+    print(kg.get_relations("pope", "delegates_to"))

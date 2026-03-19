@@ -46,7 +46,7 @@ STATE_ORG_MAP = {
 
 # State → Edict TaskState value 映射
 _STATE_TO_EDICT = {
-    'Taizi': 'taizi', 'Zhongshu': 'zhongshu', 'Menxia': 'menxia',
+    'Taizi': 'pope', 'Zhongshu': 'cardinal', 'Menxia': 'cardinal_office',
     'Assigned': 'assigned', 'Next': 'next', 'Doing': 'doing',
     'Review': 'review', 'Done': 'done', 'Blocked': 'blocked',
     'Cancelled': 'cancelled', 'Pending': 'pending',

@@ -57,21 +57,21 @@ STATE_TRANSITIONS = {
 
 # 状态 → Agent 映射
 STATE_AGENT_MAP = {
-    TaskState.Taizi: "taizi",
-    TaskState.Zhongshu: "zhongshu",
-    TaskState.Menxia: "menxia",
-    TaskState.Assigned: "shangshu",
-    TaskState.Review: "shangshu",
+    TaskState.Taizi: "pope",
+    TaskState.Zhongshu: "cardinal",
+    TaskState.Menxia: "cardinal_office",
+    TaskState.Assigned: "bishop",
+    TaskState.Review: "bishop",
 }
 
 # 组织 → Agent 映射（六部）
 ORG_AGENT_MAP = {
-    "户部": "hubu",
-    "礼部": "libu",
-    "兵部": "bingbu",
-    "刑部": "xingbu",
-    "工部": "gongbu",
-    "吏部": "libu_hr",
+    "户部": "treasury",
+    "礼部": "ceremony",
+    "兵部": "knights",
+    "刑部": "inquisition",
+    "工部": "guild",
+    "吏部": "personnel",
 }
 
 

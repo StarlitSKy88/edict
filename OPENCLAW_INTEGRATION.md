@@ -129,11 +129,11 @@ python3 server.py --port 7891
 ```json
 {
   "agents": {
-    "taizi": {
+    "pope": {
       "model": "anthropic/claude-sonnet-4-6",
       "skills": ["edict-basic"]
     },
-    "zhongshu": {
+    "cardinal": {
       "model": "anthropic/claude-sonnet-4-6", 
       "skills": ["edict-planning"]
     }
@@ -238,7 +238,7 @@ python3 scripts/backup.py
 
 ```bash
 # 通过 OpenClaw 调用
-openclaw agent --agent taizi -m "请分析这个需求..."
+openclaw agent --agent pope -m "请分析这个需求..."
 
 # 直接调用脚本
 python3 scripts/kanban_update.py create JJC-20260318-001 "新任务" Taizi 太子 太子 "任务描述"

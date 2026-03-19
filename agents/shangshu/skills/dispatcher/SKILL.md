@@ -1,4 +1,4 @@
-# 尚书省 Skill - 任务派发与调度
+# 主教团 Skill - 任务派发与调度
 
 ## 功能
 1. 任务分配到部门
@@ -7,4 +7,4 @@
 4. 进度跟踪
 
 ## 使用
-python3 skills/shangshu/dispatcher.py --task "任务"
+python3 skills/bishop/dispatcher.py --task "任务"

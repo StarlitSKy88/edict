@@ -125,8 +125,8 @@ class OrchestratorWorker:
     async def _on_task_created(self, payload: dict, trace_id: str):
         """任务创建 → 派发给太子 agent 起草。"""
         task_id = payload.get("task_id")
-        state = payload.get("state", "taizi")
-        agent = STATE_AGENT_MAP.get(TaskState(state), "taizi")
+        state = payload.get("state", "pope")
+        agent = STATE_AGENT_MAP.get(TaskState(state), "pope")
 
         await self.bus.publish(
             topic=TOPIC_TASK_DISPATCH,

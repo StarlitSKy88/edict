@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-太子 Skill - 消息分类器
+教皇 Skill - 消息分类器
 功能: 消息分类、意图识别、任务提取、紧急度判断
 """
 import sys
@@ -197,7 +197,7 @@ class MessageClassifier:
 
 def main():
     import argparse
-    parser = argparse.ArgumentParser(description='太子消息分类器')
+    parser = argparse.ArgumentParser(description='教皇消息分类器')
     parser.add_argument('--message', '-m', required=True, help='要分类的消息')
     parser.add_argument('--json', action='store_true', help='JSON输出')
     

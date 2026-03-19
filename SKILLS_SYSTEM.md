@@ -104,25 +104,25 @@
 ### 4.1 调用 Skill
 ```bash
 # 太子分类
-python3 agents/taizi/skills/classifier/main.py --message "帮我想营销方案"
+python3 agents/pope/skills/classifier/main.py --message "帮我想营销方案"
 
 # 中书省规划
-python3 agents/zhongshu/skills/planner/main.py --task "研发聊天机器人"
+python3 agents/cardinal/skills/planner/main.py --task "研发聊天机器人"
 
 # 门下省审核
-python3 agents/menxia/skills/reviewer/main.py --plan "方案内容"
+python3 agents/cardinal_office/skills/reviewer/main.py --plan "方案内容"
 ```
 
 ### 4.2 记忆系统
 ```bash
 # 检索经验
-python3 scripts/memory_system.py --retrieve --agent zhongshu
+python3 scripts/memory_system.py --retrieve --agent cardinal
 
 # 记录学习
 python3 scripts/memory_system.py --store pattern zhongshu "规划大项目要..."
 
 # 生成 Context
-python3 scripts/memory_system.py --compress --agent zhongshu
+python3 scripts/memory_system.py --compress --agent cardinal
 ```
 
 ### 4.3 自主进化

@@ -189,11 +189,11 @@ if __name__ == '__main__':
     optimizer = CommOptimizer()
     
     # 模拟任务链
-    optimizer.start_chain("JJC-001", ["太子", "中书省", "门下省", "尚书省", "工部"])
+    optimizer.start_chain("JJC-001", ["教皇", "红衣主教团", "枢机处", "主教团", "工匠行会"])
     
     # 模拟执行
-    optimizer.next_step("JJC-001", "太子", "已处理")
-    optimizer.next_step("JJC-001", "中书省", "已规划")
+    optimizer.next_step("JJC-001", "教皇", "已处理")
+    optimizer.next_step("JJC-001", "红衣主教团", "已规划")
     
     # 查看状态
     status = optimizer.get_status("JJC-001")

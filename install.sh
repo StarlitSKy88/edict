@@ -172,17 +172,17 @@ cfg_path = pathlib.Path.home() / '.openclaw' / 'openclaw.json'
 cfg = json.loads(cfg_path.read_text())
 
 AGENTS = [
-  {"id": "taizi",    "subagents": {"allowAgents": ["zhongshu"]}},
-    {"id": "zhongshu", "subagents": {"allowAgents": ["menxia", "shangshu"]}},
-    {"id": "menxia",   "subagents": {"allowAgents": ["shangshu", "zhongshu"]}},
-  {"id": "shangshu", "subagents": {"allowAgents": ["zhongshu", "menxia", "hubu", "libu", "bingbu", "xingbu", "gongbu", "libu_hr"]}},
-    {"id": "hubu",     "subagents": {"allowAgents": ["shangshu"]}},
-    {"id": "libu",     "subagents": {"allowAgents": ["shangshu"]}},
-    {"id": "bingbu",   "subagents": {"allowAgents": ["shangshu"]}},
-    {"id": "xingbu",   "subagents": {"allowAgents": ["shangshu"]}},
-    {"id": "gongbu",   "subagents": {"allowAgents": ["shangshu"]}},
-  {"id": "libu_hr",  "subagents": {"allowAgents": ["shangshu"]}},
-  {"id": "zaochao",  "subagents": {"allowAgents": []}},
+  {"id": "pope",    "subagents": {"allowAgents": ["cardinal"]}},
+    {"id": "cardinal", "subagents": {"allowAgents": ["cardinal_office", "bishop"]}},
+    {"id": "cardinal_office",   "subagents": {"allowAgents": ["bishop", "cardinal"]}},
+  {"id": "bishop", "subagents": {"allowAgents": ["cardinal", "cardinal_office", "treasury", "ceremony", "knights", "inquisition", "guild", "personnel"]}},
+    {"id": "treasury",     "subagents": {"allowAgents": ["bishop"]}},
+    {"id": "ceremony",     "subagents": {"allowAgents": ["bishop"]}},
+    {"id": "knights",   "subagents": {"allowAgents": ["bishop"]}},
+    {"id": "inquisition",   "subagents": {"allowAgents": ["bishop"]}},
+    {"id": "guild",   "subagents": {"allowAgents": ["bishop"]}},
+  {"id": "personnel",  "subagents": {"allowAgents": ["bishop"]}},
+  {"id": "astrologer",  "subagents": {"allowAgents": []}},
 ]
 
 agents_cfg = cfg.setdefault('agents', {})

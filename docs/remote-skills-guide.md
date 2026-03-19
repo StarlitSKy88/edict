@@ -22,7 +22,7 @@
 **请求体：**
 ```json
 {
-  "agentId": "zhongshu",
+  "agentId": "cardinal",
   "skillName": "code_review",
   "sourceUrl": "https://raw.githubusercontent.com/org/skills-repo/main/code_review/SKILL.md",
   "description": "代码审查专项技能"
@@ -44,9 +44,9 @@
   "ok": true,
   "message": "技能 code_review 已添加到 zhongshu",
   "skillName": "code_review",
-  "agentId": "zhongshu",
+  "agentId": "cardinal",
   "source": "https://raw.githubusercontent.com/...",
-  "localPath": "/Users/bingsen/.openclaw/workspace-zhongshu/skills/code_review/SKILL.md",
+  "localPath": "/Users/bingsen/.openclaw/workspace-cardinal/skills/code_review/SKILL.md",
   "size": 2048,
   "addedAt": "2026-03-02T14:30:00Z"
 }
@@ -72,10 +72,10 @@
   "remoteSkills": [
     {
       "skillName": "code_review",
-      "agentId": "zhongshu",
+      "agentId": "cardinal",
       "sourceUrl": "https://raw.githubusercontent.com/org/skills-repo/main/code_review/SKILL.md",
       "description": "代码审查专项技能",
-      "localPath": "/Users/bingsen/.openclaw/workspace-zhongshu/skills/code_review/SKILL.md",
+      "localPath": "/Users/bingsen/.openclaw/workspace-cardinal/skills/code_review/SKILL.md",
       "lastUpdated": "2026-03-02T14:30:00Z",
       "status": "valid"  // valid | invalid | not-found
     }
@@ -91,7 +91,7 @@
 **请求体：**
 ```json
 {
-  "agentId": "zhongshu",
+  "agentId": "cardinal",
   "skillName": "code_review"
 }
 ```
@@ -114,7 +114,7 @@
 **请求体：**
 ```json
 {
-  "agentId": "zhongshu",
+  "agentId": "cardinal",
   "skillName": "code_review"
 }
 ```
@@ -311,7 +311,7 @@ compatibleAgents: [bingbu, xingbu, menxia]
 
 ```
 ~/.openclaw/
-├── workspace-zhongshu/
+├── workspace-cardinal/
 │   └── skills/
 │       ├── code_review/
 │       │   ├── SKILL.md
@@ -385,7 +385,7 @@ curl -I https://raw.githubusercontent.com/...
 
 A: 检查文件格式：
 ```bash
-python3 -m json.tool ~/.openclaw/workspace-zhongshu/skills/xxx/SKILL.md
+python3 -m json.tool ~/.openclaw/workspace-cardinal/skills/xxx/SKILL.md
 ```
 
 **Q: 能否从私有 GitHub 仓库导入？**

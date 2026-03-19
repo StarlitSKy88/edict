@@ -23,7 +23,7 @@ python3 scripts/skill_manager.py add-remote \
 # 输出:
 # ⏳ 正在从 https://raw.githubusercontent.com/... 下载...
 # ✅ 技能 code_review 已添加到 zhongshu
-#    路径: /Users/xxx/.openclaw/workspace-zhongshu/skills/code_review/SKILL.md
+#    路径: /Users/xxx/.openclaw/workspace-cardinal/skills/code_review/SKILL.md
 #    大小: 2048 字节
 ```
 
@@ -51,10 +51,10 @@ curl http://localhost:7891/api/remote-skills-list | jq .
 #   "remoteSkills": [
 #     {
 #       "skillName": "code_review",
-#       "agentId": "zhongshu",
+#       "agentId": "cardinal",
 #       "sourceUrl": "https://raw.githubusercontent.com/...",
 #       "description": "代码审查能力",
-#       "localPath": "/Users/xxx/.openclaw/workspace-zhongshu/skills/code_review/SKILL.md",
+#       "localPath": "/Users/xxx/.openclaw/workspace-cardinal/skills/code_review/SKILL.md",
 #       "addedAt": "2026-03-02T14:30:00Z",
 #       "lastUpdated": "2026-03-02T14:30:00Z",
 #       "status": "valid"
@@ -94,7 +94,7 @@ python3 scripts/skill_manager.py update-remote \
 # ⏳ 正在从 https://raw.githubusercontent.com/... 下载...
 # ✅ 技能 code_review 已添加到 zhongshu
 # ✅ 技能已更新
-#    路径: /Users/xxx/.openclaw/workspace-zhongshu/skills/code_review/SKILL.md
+#    路径: /Users/xxx/.openclaw/workspace-cardinal/skills/code_review/SKILL.md
 #    大小: 2156 字节
 ```
 
@@ -212,7 +212,7 @@ python3 scripts/skill_manager.py add-remote \
 curl -X POST http://localhost:7891/api/add-remote-skill \
   -H "Content-Type: application/json" \
   -d '{
-    "agentId": "zhongshu",
+    "agentId": "cardinal",
     "skillName": "code_review",
     "sourceUrl": "https://raw.githubusercontent.com/...",
     "description": "代码审查"
@@ -225,9 +225,9 @@ curl -X POST http://localhost:7891/api/add-remote-skill \
   "ok": true,
   "message": "技能 code_review 已从远程源添加到 zhongshu",
   "skillName": "code_review",
-  "agentId": "zhongshu",
+  "agentId": "cardinal",
   "source": "https://raw.githubusercontent.com/...",
-  "localPath": "/Users/xxx/.openclaw/workspace-zhongshu/skills/code_review/SKILL.md",
+  "localPath": "/Users/xxx/.openclaw/workspace-cardinal/skills/code_review/SKILL.md",
   "size": 2048,
   "addedAt": "2026-03-02T14:30:00Z"
 }
@@ -248,10 +248,10 @@ curl http://localhost:7891/api/remote-skills-list
   "remoteSkills": [
     {
       "skillName": "code_review",
-      "agentId": "zhongshu",
+      "agentId": "cardinal",
       "sourceUrl": "https://raw.githubusercontent.com/...",
       "description": "代码审查能力",
-      "localPath": "/Users/xxx/.openclaw/workspace-zhongshu/skills/code_review/SKILL.md",
+      "localPath": "/Users/xxx/.openclaw/workspace-cardinal/skills/code_review/SKILL.md",
       "addedAt": "2026-03-02T14:30:00Z",
       "lastUpdated": "2026-03-02T14:30:00Z",
       "status": "valid"
@@ -270,7 +270,7 @@ curl http://localhost:7891/api/remote-skills-list
 curl -X POST http://localhost:7891/api/update-remote-skill \
   -H "Content-Type: application/json" \
   -d '{
-    "agentId": "zhongshu",
+    "agentId": "cardinal",
     "skillName": "code_review"
   }'
 ```
@@ -283,7 +283,7 @@ curl -X POST http://localhost:7891/api/update-remote-skill \
 curl -X POST http://localhost:7891/api/remove-remote-skill \
   -H "Content-Type: application/json" \
   -d '{
-    "agentId": "zhongshu",
+    "agentId": "cardinal",
     "skillName": "code_review"
   }'
 ```
@@ -323,7 +323,7 @@ description: 描述
 python3 scripts/skill_manager.py list-remote
 
 # 检查本地文件
-ls -la ~/.openclaw/workspace-zhongshu/skills/
+ls -la ~/.openclaw/workspace-cardinal/skills/
 ```
 
 ---

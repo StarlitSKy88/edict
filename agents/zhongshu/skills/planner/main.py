@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-中书省 Skill - 任务规划器
+红衣主教团 Skill - 任务规划器
 功能: 需求分析、任务拆解、风险评估、资源规划
 """
 import sys
@@ -38,32 +38,32 @@ class TaskPlanner:
     
     # 部门能力映射
     DEPT_CAPABILITIES = {
-        '吏部': ['调研', '招聘', '培训', '规划'],
-        '户部': ['财务', '预算', '核算', '资金'],
-        '礼部': ['文案', '内容', '策划', '外交'],
-        '兵部': ['安全', '风控', '合规', '安保'],
-        '刑部': ['审计', '法务', '合规', '审查'],
-        '工部': ['开发', '技术', '架构', '运维'],
-        '钦天监': ['分析', '预测', '研究', '观测']
+        '人事部': ['调研', '招聘', '培训', '规划'],
+        '财政部': ['财务', '预算', '核算', '资金'],
+        '典礼部': ['文案', '内容', '策划', '外交'],
+        '骑士团': ['安全', '风控', '合规', '安保'],
+        '宗教裁判所': ['审计', '法务', '合规', '审查'],
+        '工匠行会': ['开发', '技术', '架构', '运维'],
+        '占星术士': ['分析', '预测', '研究', '观测']
     }
     
     # 任务类型到部门的映射
     TASK_TYPE_DEPT = {
-        '开发': '工部',
-        '代码': '工部',
-        '技术': '工部',
-        '财务': '户部',
-        '预算': '户部',
-        '招聘': '吏部',
-        '人员': '吏部',
-        '文案': '礼部',
-        '内容': '礼部',
-        '安全': '兵部',
-        '合规': '兵部',
-        '法务': '刑部',
-        '审计': '刑部',
-        '分析': '钦天监',
-        '研究': '钦天监'
+        '开发': '工匠行会',
+        '代码': '工匠行会',
+        '技术': '工匠行会',
+        '财务': '财政部',
+        '预算': '财政部',
+        '招聘': '人事部',
+        '人员': '人事部',
+        '文案': '典礼部',
+        '内容': '典礼部',
+        '安全': '骑士团',
+        '合规': '骑士团',
+        '法务': '宗教裁判所',
+        '审计': '宗教裁判所',
+        '分析': '占星术士',
+        '研究': '占星术士'
     }
     
     def plan(self, task_description: str, task_id: str = "") -> Plan:
@@ -118,7 +118,7 @@ class TaskPlanner:
         # 标准拆解
         subtasks.append(SubTask(
             title="需求确认",
-            dept="中书省",
+            dept="红衣主教团",
             days=0.5,
             priority="high"
         ))
@@ -126,35 +126,35 @@ class TaskPlanner:
         # 根据任务类型添加具体子任务
         if task_type == '开发':
             subtasks.extend([
-                SubTask(title="技术调研", dept="工部", days=1),
-                SubTask(title="方案设计", dept="工部", days=1),
-                SubTask(title="开发实施", dept="工部", days=3),
-                SubTask(title="测试验收", dept="工部", days=1)
+                SubTask(title="技术调研", dept="工匠行会", days=1),
+                SubTask(title="方案设计", dept="工匠行会", days=1),
+                SubTask(title="开发实施", dept="工匠行会", days=3),
+                SubTask(title="测试验收", dept="工匠行会", days=1)
             ])
         elif task_type == '财务':
             subtasks.extend([
-                SubTask(title="财务分析", dept="户部", days=1),
-                SubTask(title="预算编制", dept="户部", days=1),
-                SubTask(title="审批流转", dept="户部", days=0.5)
+                SubTask(title="财务分析", dept="财政部", days=1),
+                SubTask(title="预算编制", dept="财政部", days=1),
+                SubTask(title="审批流转", dept="财政部", days=0.5)
             ])
         elif task_type == '内容':
             subtasks.extend([
-                SubTask(title="内容策划", dept="礼部", days=1),
-                SubTask(title="文案撰写", dept="礼部", days=1),
-                SubTask(title="审核发布", dept="礼部", days=0.5)
+                SubTask(title="内容策划", dept="典礼部", days=1),
+                SubTask(title="文案撰写", dept="典礼部", days=1),
+                SubTask(title="审核发布", dept="典礼部", days=0.5)
             ])
         else:
             # 默认拆解
             subtasks.extend([
-                SubTask(title="调研分析", dept="吏部", days=1),
-                SubTask(title="方案制定", dept="中书省", days=1),
-                SubTask(title="执行落地", dept="工部", days=2)
+                SubTask(title="调研分析", dept="人事部", days=1),
+                SubTask(title="方案制定", dept="红衣主教团", days=1),
+                SubTask(title="执行落地", dept="工匠行会", days=2)
             ])
         
         # 添加汇总
         subtasks.append(SubTask(
             title="汇总归档",
-            dept="尚书省",
+            dept="主教团",
             days=0.5,
             priority="low"
         ))
@@ -201,14 +201,14 @@ class TaskPlanner:
         depts = set(st.dept for st in subtasks)
         
         for dept in depts:
-            if dept != "中书省" and dept != "尚书省":
+            if dept != "红衣主教团" and dept != "主教团":
                 resources.append(f"{dept}支持")
         
         return resources
 
 def main():
     import argparse
-    parser = argparse.ArgumentParser(description='中书省任务规划器')
+    parser = argparse.ArgumentParser(description='红衣主教团任务规划器')
     parser.add_argument('--task', '-t', required=True, help='任务描述')
     parser.add_argument('--task-id', '-i', help='任务ID')
     parser.add_argument('--json', '-j', action='store_true', help='JSON输出')

@@ -42,20 +42,20 @@ def state_from_session(age_ms, aborted):
 
 def detect_official(agent_id):
     mapping = {
-        'main':    ('储君', '太子'),        # legacy id for taizi
-        'taizi':   ('储君', '太子'),
-        'zhongshu': ('中书令', '中书省'),
-        'menxia':  ('侍中', '门下省'),
-        'shangshu': ('尚书令', '尚书省'),
-        'hubu':    ('户部尚书', '户部'),
-        'libu':    ('礼部尚书', '礼部'),
-        'bingbu':  ('兵部尚书', '兵部'),
-        'xingbu':  ('刑部尚书', '刑部'),
-        'gongbu':  ('工部尚书', '工部'),
-        'libu_hr': ('吏部尚书', '吏部'),
-        'zaochao': ('钦天监', '钦天监'),
+        'main':    ('储君', '教皇'),        # legacy id for taizi
+        'pope':   ('储君', '教皇'),
+        'cardinal': ('中书令', '红衣主教团'),
+        'cardinal_office':  ('侍中', '枢机处'),
+        'bishop': ('尚书令', '主教团'),
+        'treasury':    ('财政部尚书', '财政部'),
+        'ceremony':    ('典礼部尚书', '典礼部'),
+        'knights':  ('骑士团尚书', '骑士团'),
+        'inquisition':  ('宗教裁判所尚书', '宗教裁判所'),
+        'guild':  ('工匠行会尚书', '工匠行会'),
+        'personnel': ('人事部尚书', '人事部'),
+        'astrologer': ('占星术士', '占星术士'),
     }
-    return mapping.get(agent_id, ('尚书令', '尚书省'))
+    return mapping.get(agent_id, ('尚书令', '主教团'))
 
 
 def load_activity(session_file, limit=12):

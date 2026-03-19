@@ -46,5 +46,5 @@ result = handler.handle(error, context)
 在每个 Agent 的 SOUL 中添加：
 ```
 当遇到错误时，使用 error-handler skill 处理。
-如果无法恢复，标记任务为 Blocked 并通知太子。
+如果无法恢复，标记任务为 Blocked 并通知教皇。
 ```

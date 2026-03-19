@@ -12,10 +12,10 @@
 
 用法:
   # 新建任务（收旨时）
-  python3 kanban_update.py create JJC-20260223-012 "任务标题" Zhongshu 中书省 中书令
+  python3 kanban_update.py create JJC-20260223-012 "任务标题" Zhongshu 红衣主教团 中书令
 
   # 更新状态
-  python3 kanban_update.py state JJC-20260223-012 Menxia "规划方案已提交门下省"
+  python3 kanban_update.py state JJC-20260223-012 Menxia "规划方案已提交枢机处"
 
   # 验证任务ID
   python3 kanban_update.py validate JJC-20260223-012
@@ -103,30 +103,30 @@ def update_stats(cmd: str, success: bool = True):
         pass  # 统计失败不影响主流程
 
 STATE_ORG_MAP = {
-    'Taizi': '太子', 'Zhongshu': '中书省', 'Menxia': '门下省', 'Assigned': '尚书省',
-    'Doing': '执行中', 'Review': '尚书省', 'Done': '完成', 'Blocked': '阻塞',
+    'Taizi': '教皇', 'Zhongshu': '红衣主教团', 'Menxia': '枢机处', 'Assigned': '主教团',
+    'Doing': '执行中', 'Review': '主教团', 'Done': '完成', 'Blocked': '阻塞',
 }
 
 _STATE_AGENT_MAP = {
-    'Taizi': 'taizi',
-    'Zhongshu': 'zhongshu',
-    'Menxia': 'menxia',
-    'Assigned': 'shangshu',
-    'Review': 'shangshu',
-    'Pending': 'zhongshu',
+    'Taizi': 'pope',
+    'Zhongshu': 'cardinal',
+    'Menxia': 'cardinal_office',
+    'Assigned': 'bishop',
+    'Review': 'bishop',
+    'Pending': 'cardinal',
 }
 
 _ORG_AGENT_MAP = {
-    '礼部': 'libu', '户部': 'hubu', '兵部': 'bingbu',
-    '刑部': 'xingbu', '工部': 'gongbu', '吏部': 'libu_hr',
-    '中书省': 'zhongshu', '门下省': 'menxia', '尚书省': 'shangshu',
+    '典礼部': 'ceremony', '财政部': 'treasury', '骑士团': 'knights',
+    '宗教裁判所': 'inquisition', '工匠行会': 'guild', '人事部': 'personnel',
+    '红衣主教团': 'cardinal', '枢机处': 'cardinal_office', '主教团': 'bishop',
 }
 
 _AGENT_LABELS = {
-    'main': '太子', 'taizi': '太子',
-    'zhongshu': '中书省', 'menxia': '门下省', 'shangshu': '尚书省',
-    'libu': '礼部', 'hubu': '户部', 'bingbu': '兵部', 'xingbu': '刑部',
-    'gongbu': '工部', 'libu_hr': '吏部', 'zaochao': '钦天监',
+    'main': '教皇', 'pope': '教皇',
+    'cardinal': '红衣主教团', 'cardinal_office': '枢机处', 'bishop': '主教团',
+    'ceremony': '典礼部', 'treasury': '财政部', 'knights': '骑士团', 'inquisition': '宗教裁判所',
+    'guild': '工匠行会', 'personnel': '人事部', 'astrologer': '占星术士',
 }
 
 MAX_PROGRESS_LOG = 100  # 单任务最大进展日志条数

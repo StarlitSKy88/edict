@@ -208,9 +208,9 @@ import time
 
 class TaskState(Enum):
     PENDING = "pending"
-    TAIZI = "taizi"
-    ZHONGSHU = "zhongshu"
-    MENXIA = "menxia"
+    TAIZI = "pope"
+    ZHONGSHU = "cardinal"
+    MENXIA = "cardinal_office"
     ASSIGNED = "assigned"
     DOING = "doing"
     REVIEW = "review"

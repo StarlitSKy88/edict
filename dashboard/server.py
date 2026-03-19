@@ -651,17 +651,17 @@ def handle_review_action(task_id, action, comment=''):
 # ══ Agent 在线状态检测 ══
 
 _AGENT_DEPTS = [
-    {'id':'taizi',   'label':'太子',  'emoji':'🤴', 'role':'太子',     'rank':'储君'},
-    {'id':'zhongshu','label':'中书省','emoji':'📜', 'role':'中书令',   'rank':'正一品'},
-    {'id':'menxia',  'label':'门下省','emoji':'🔍', 'role':'侍中',     'rank':'正一品'},
-    {'id':'shangshu','label':'尚书省','emoji':'📮', 'role':'尚书令',   'rank':'正一品'},
-    {'id':'hubu',    'label':'户部',  'emoji':'💰', 'role':'户部尚书', 'rank':'正二品'},
-    {'id':'libu',    'label':'礼部',  'emoji':'📝', 'role':'礼部尚书', 'rank':'正二品'},
-    {'id':'bingbu',  'label':'兵部',  'emoji':'⚔️', 'role':'兵部尚书', 'rank':'正二品'},
-    {'id':'xingbu',  'label':'刑部',  'emoji':'⚖️', 'role':'刑部尚书', 'rank':'正二品'},
-    {'id':'gongbu',  'label':'工部',  'emoji':'🔧', 'role':'工部尚书', 'rank':'正二品'},
-    {'id':'libu_hr', 'label':'吏部',  'emoji':'👔', 'role':'吏部尚书', 'rank':'正二品'},
-    {'id':'zaochao', 'label':'钦天监','emoji':'📰', 'role':'朝报官',   'rank':'正三品'},
+    {'id':'pope',   'label':'太子',  'emoji':'🤴', 'role':'太子',     'rank':'储君'},
+    {'id':'cardinal','label':'中书省','emoji':'📜', 'role':'中书令',   'rank':'正一品'},
+    {'id':'cardinal_office',  'label':'门下省','emoji':'🔍', 'role':'侍中',     'rank':'正一品'},
+    {'id':'bishop','label':'尚书省','emoji':'📮', 'role':'尚书令',   'rank':'正一品'},
+    {'id':'treasury',    'label':'户部',  'emoji':'💰', 'role':'户部尚书', 'rank':'正二品'},
+    {'id':'ceremony',    'label':'礼部',  'emoji':'📝', 'role':'礼部尚书', 'rank':'正二品'},
+    {'id':'knights',  'label':'兵部',  'emoji':'⚔️', 'role':'兵部尚书', 'rank':'正二品'},
+    {'id':'inquisition',  'label':'刑部',  'emoji':'⚖️', 'role':'刑部尚书', 'rank':'正二品'},
+    {'id':'guild',  'label':'工部',  'emoji':'🔧', 'role':'工部尚书', 'rank':'正二品'},
+    {'id':'personnel', 'label':'吏部',  'emoji':'👔', 'role':'吏部尚书', 'rank':'正二品'},
+    {'id':'astrologer', 'label':'钦天监','emoji':'📰', 'role':'朝报官',   'rank':'正三品'},
 ]
 
 
@@ -856,19 +856,19 @@ def wake_agent(agent_id, message=''):
 
 # 状态 → agent_id 映射
 _STATE_AGENT_MAP = {
-    'Taizi': 'taizi',
-    'Zhongshu': 'zhongshu',
-    'Menxia': 'menxia',
-    'Assigned': 'shangshu',
+    'Taizi': 'pope',
+    'Zhongshu': 'cardinal',
+    'Menxia': 'cardinal_office',
+    'Assigned': 'bishop',
     'Doing': None,         # 六部，需从 org 推断
-    'Review': 'shangshu',
+    'Review': 'bishop',
     'Next': None,          # 待执行，从 org 推断
-    'Pending': 'zhongshu', # 待处理，默认中书省
+    'Pending': 'cardinal', # 待处理，默认中书省
 }
 _ORG_AGENT_MAP = {
-    '礼部': 'libu', '户部': 'hubu', '兵部': 'bingbu',
-    '刑部': 'xingbu', '工部': 'gongbu', '吏部': 'libu_hr',
-    '中书省': 'zhongshu', '门下省': 'menxia', '尚书省': 'shangshu',
+    '礼部': 'ceremony', '户部': 'treasury', '兵部': 'knights',
+    '刑部': 'inquisition', '工部': 'guild', '吏部': 'personnel',
+    '中书省': 'cardinal', '门下省': 'cardinal_office', '尚书省': 'bishop',
 }
 
 _TERMINAL_STATES = {'Done', 'Cancelled'}
@@ -1009,7 +1009,7 @@ def handle_scheduler_escalate(task_id, reason=''):
     sched = _ensure_scheduler(task)
     current_level = int(sched.get('escalationLevel') or 0)
     next_level = min(current_level + 1, 2)
-    target = 'menxia' if next_level == 1 else 'shangshu'
+    target = 'cardinal_office' if next_level == 1 else 'bishop'
     target_label = '门下省' if next_level == 1 else '尚书省'
 
     sched['escalationLevel'] = next_level
@@ -1108,7 +1108,7 @@ def handle_scheduler_scan(threshold_sec=600):
 
         if level < 2:
             next_level = level + 1
-            target = 'menxia' if next_level == 1 else 'shangshu'
+            target = 'cardinal_office' if next_level == 1 else 'bishop'
             target_label = '门下省' if next_level == 1 else '尚书省'
             sched['escalationLevel'] = next_level
             sched['lastEscalatedAt'] = now_iso()
@@ -1904,28 +1904,28 @@ def dispatch_for_state(task_id, task, new_state, trigger='state-transition'):
 
     # 根据 agent_id 构造针对性消息
     _msgs = {
-        'taizi': (
+        'pope': (
             f'📜 皇上旨意需要你处理\n'
             f'任务ID: {task_id}\n'
             f'旨意: {title}\n'
             f'⚠️ 看板已有此任务，请勿重复创建。直接用 kanban_update.py 更新状态。\n'
             f'请立即转交中书省起草执行方案。'
         ),
-        'zhongshu': (
+        'cardinal': (
             f'📜 旨意已到中书省，请起草方案\n'
             f'任务ID: {task_id}\n'
             f'旨意: {title}\n'
             f'⚠️ 看板已有此任务记录，请勿重复创建。直接用 kanban_update.py state 更新状态。\n'
             f'请立即起草执行方案，走完完整三省流程（中书起草→门下审议→尚书派发→六部执行）。'
         ),
-        'menxia': (
+        'cardinal_office': (
             f'📋 中书省方案提交审议\n'
             f'任务ID: {task_id}\n'
             f'旨意: {title}\n'
             f'⚠️ 看板已有此任务，请勿重复创建。\n'
             f'请审议中书省方案，给出准奏或封驳意见。'
         ),
-        'shangshu': (
+        'bishop': (
             f'📮 门下省已准奏，请派发执行\n'
             f'任务ID: {task_id}\n'
             f'旨意: {title}\n'

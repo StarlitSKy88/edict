@@ -405,7 +405,7 @@
       "now": "全部完成，已回奏皇上",
       "eta": "2026-02-23 21:30",
       "block": "无",
-      "output": "/Users/bingsen/.openclaw/workspace-shangshu/",
+      "output": "/Users/bingsen/.openclaw/workspace-bishop/",
       "flow_log": [
         {
           "at": "2026-02-23T12:23:15Z",
@@ -572,7 +572,7 @@
       "now": "feishu/direct · 模型 claude-sonnet-4-6",
       "eta": "2026-02-24 22:11:03",
       "block": "无",
-      "output": "/Users/bingsen/.openclaw/agents/zhongshu/sessions/af6ad7f2-0130-4d88-81f0-dad420cc0dc7.jsonl",
+      "output": "/Users/bingsen/.openclaw/agents/cardinal/sessions/af6ad7f2-0130-4d88-81f0-dad420cc0dc7.jsonl",
       "flow": {
         "draft": "agent=zhongshu",
         "review": "updatedAt=2026-02-24 22:11:03",
@@ -632,7 +632,7 @@
         }
       ],
       "sourceMeta": {
-        "agentId": "zhongshu",
+        "agentId": "cardinal",
         "sessionKey": "agent:zhongshu:main",
         "sessionId": "af6ad7f2-0130-4d88-81f0-dad420cc0dc7",
         "updatedAt": 1771942263194,
@@ -752,7 +752,7 @@
       "now": "feishu/- · 模型 claude-sonnet-4-6",
       "eta": "2026-02-24 22:10:18",
       "block": "无",
-      "output": "/Users/bingsen/.openclaw/agents/shangshu/sessions/8be927fe-8360-449e-b02d-4c7d70d9f141.jsonl",
+      "output": "/Users/bingsen/.openclaw/agents/bishop/sessions/8be927fe-8360-449e-b02d-4c7d70d9f141.jsonl",
       "flow": {
         "draft": "agent=shangshu",
         "review": "updatedAt=2026-02-24 22:10:18",
@@ -812,7 +812,7 @@
         }
       ],
       "sourceMeta": {
-        "agentId": "shangshu",
+        "agentId": "bishop",
         "sessionKey": "agent:shangshu:main",
         "sessionId": "8be927fe-8360-449e-b02d-4c7d70d9f141",
         "updatedAt": 1771942218056,
@@ -842,7 +842,7 @@
       "now": "webchat/- · 模型 claude-sonnet-4-6",
       "eta": "2026-02-24 22:07:50",
       "block": "无",
-      "output": "/Users/bingsen/.openclaw/agents/gongbu/sessions/77f5e08c-e75c-4094-b4db-071eae702f7d.jsonl",
+      "output": "/Users/bingsen/.openclaw/agents/guild/sessions/77f5e08c-e75c-4094-b4db-071eae702f7d.jsonl",
       "flow": {
         "draft": "agent=gongbu",
         "review": "updatedAt=2026-02-24 22:07:50",
@@ -902,7 +902,7 @@
         }
       ],
       "sourceMeta": {
-        "agentId": "gongbu",
+        "agentId": "guild",
         "sessionKey": "agent:gongbu:subagent:de641ed5-fefa-4d35-9ca1-6895fa103447",
         "sessionId": "77f5e08c-e75c-4094-b4db-071eae702f7d",
         "updatedAt": 1771942070958,
@@ -932,7 +932,7 @@
       "now": "webchat/- · 模型 claude-sonnet-4-6",
       "eta": "2026-02-24 22:07:43",
       "block": "无",
-      "output": "/Users/bingsen/.openclaw/agents/libu/sessions/2f31143a-11f7-47fc-a2ef-86a65596486f.jsonl",
+      "output": "/Users/bingsen/.openclaw/agents/ceremony/sessions/2f31143a-11f7-47fc-a2ef-86a65596486f.jsonl",
       "flow": {
         "draft": "agent=libu",
         "review": "updatedAt=2026-02-24 22:07:43",
@@ -987,7 +987,7 @@
         }
       ],
       "sourceMeta": {
-        "agentId": "libu",
+        "agentId": "ceremony",
         "sessionKey": "agent:libu:subagent:9a63ae48-0851-4d63-8a37-0326007a24ff",
         "sessionId": "2f31143a-11f7-47fc-a2ef-86a65596486f",
         "updatedAt": 1771942063789,
@@ -1017,7 +1017,7 @@
       "now": "webchat/- · 模型 -",
       "eta": "2026-02-24 22:05:48",
       "block": "无",
-      "output": "/Users/bingsen/.openclaw/agents/bingbu/sessions/53af4339-e3f9-49ec-8162-9880d0c51e26.jsonl",
+      "output": "/Users/bingsen/.openclaw/agents/knights/sessions/53af4339-e3f9-49ec-8162-9880d0c51e26.jsonl",
       "flow": {
         "draft": "agent=bingbu",
         "review": "updatedAt=2026-02-24 22:05:48",
@@ -1077,7 +1077,7 @@
         }
       ],
       "sourceMeta": {
-        "agentId": "bingbu",
+        "agentId": "knights",
         "sessionKey": "agent:bingbu:subagent:36d6c4fc-66c7-49f1-bf15-b4ce9613c0ba",
         "sessionId": "53af4339-e3f9-49ec-8162-9880d0c51e26",
         "updatedAt": 1771941948040,
@@ -1116,7 +1116,7 @@
       "ac": "来自 OpenClaw runtime sessions 的实时映射",
       "activity": [],
       "sourceMeta": {
-        "agentId": "shangshu",
+        "agentId": "bishop",
         "sessionKey": "agent:shangshu:cron:3d21409f-eb0b-4f13-9f00-283e249e1704",
         "sessionId": "ef5d83a2-9e5a-42f1-b16c-396ab2f8b871",
         "updatedAt": 1771885187176,
@@ -1151,7 +1151,7 @@
       "ac": "来自 OpenClaw runtime sessions 的实时映射",
       "activity": [],
       "sourceMeta": {
-        "agentId": "shangshu",
+        "agentId": "bishop",
         "sessionKey": "agent:shangshu:cron:3d21409f-eb0b-4f13-9f00-283e249e1704:run:ef5d83a2-9e5a-42f1-b16c-396ab2f8b871",
         "sessionId": "ef5d83a2-9e5a-42f1-b16c-396ab2f8b871",
         "updatedAt": 1771885187130,
@@ -1186,7 +1186,7 @@
       "ac": "来自 OpenClaw runtime sessions 的实时映射",
       "activity": [],
       "sourceMeta": {
-        "agentId": "shangshu",
+        "agentId": "bishop",
         "sessionKey": "agent:shangshu:cron:b03078fe-c25d-4a65-a05a-2f7a9453ddb2",
         "sessionId": "5d3c50db-0b91-4ff0-a9eb-26114ffb4339",
         "updatedAt": 1771884181137,
@@ -1221,7 +1221,7 @@
       "ac": "来自 OpenClaw runtime sessions 的实时映射",
       "activity": [],
       "sourceMeta": {
-        "agentId": "shangshu",
+        "agentId": "bishop",
         "sessionKey": "agent:shangshu:cron:b03078fe-c25d-4a65-a05a-2f7a9453ddb2:run:5d3c50db-0b91-4ff0-a9eb-26114ffb4339",
         "sessionId": "5d3c50db-0b91-4ff0-a9eb-26114ffb4339",
         "updatedAt": 1771884181137,
@@ -1256,7 +1256,7 @@
       "ac": "来自 OpenClaw runtime sessions 的实时映射",
       "activity": [],
       "sourceMeta": {
-        "agentId": "shangshu",
+        "agentId": "bishop",
         "sessionKey": "agent:shangshu:cron:b03078fe-c25d-4a65-a05a-2f7a9453ddb2:run:aaa29ca8-46d1-4dfd-87a8-c474f9bb8227",
         "sessionId": "aaa29ca8-46d1-4dfd-87a8-c474f9bb8227",
         "updatedAt": 1771863142993,
@@ -1431,7 +1431,7 @@
       "at": "2026-02-23 21:27:18",
       "official": "尚书令",
       "task": "电芯循环测试数据预测算法设计与可视化验证",
-      "out": "/Users/bingsen/.openclaw/workspace-shangshu/",
+      "out": "/Users/bingsen/.openclaw/workspace-bishop/",
       "qa": "通过"
     },
     {

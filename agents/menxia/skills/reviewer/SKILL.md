@@ -1,7 +1,7 @@
-# 门下省 Skill - 方案审核与封驳
+# 枢机处 Skill - 方案审核与封驳
 
 ## 触发条件
-收到中书省的方案后调用
+收到红衣主教团的方案后调用
 
 ## 功能
 
@@ -28,7 +28,7 @@
 ## 使用方法
 
 ```bash
-python3 skills/menxia/reviewer.py --plan "方案内容"
+python3 skills/cardinal_office/reviewer.py --plan "方案内容"
 ```
 
 输出：

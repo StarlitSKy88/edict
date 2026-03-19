@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Edict AI搜索 - Perplexity/Tavily
+Edict AI搜索 - Tavily
 """
 import os
 import json
@@ -17,57 +17,18 @@ class SearchResult:
     provider: str
 
 class AISearch:
-    """AI搜索"""
+    """AI搜索 - 基于Tavily"""
     
-    def __init__(self, provider: str = "perplexity"):
+    def __init__(self, provider: str = "tavily"):
         self.provider = provider
-        self.api_key = os.getenv(f"{provider.upper()}_API_KEY", "")
+        self.api_key = os.getenv("TAVILY_API_KEY", "")
     
     def search(self, query: str, num: int = 5) -> List[SearchResult]:
         """搜索"""
         
-        if self.provider == "perplexity":
-            return self._perplexity_search(query, num)
-        elif self.provider == "tavily":
+        if self.provider == "tavily":
             return self._tavily_search(query, num)
         else:
-            return self._fallback_search(query, num)
-    
-    def _perplexity_search(self, query: str, num: int) -> List[SearchResult]:
-        """Perplexity搜索"""
-        
-        if not self.api_key:
-            # 使用OpenClaw内置搜索
-            return self._openclaw_search(query, num, "perplexity")
-        
-        url = "https://api.perplexity.ai/chat/completions"
-        headers = {
-            "Authorization": f"Bearer {self.api_key}",
-            "Content-Type": "application/json"
-        }
-        
-        data = {
-            "model": "llama-3.1-sonar-small-128k-online",
-            "messages": [
-                {"role": "user", "content": query}
-            ],
-            "max_tokens": 1000
-        }
-        
-        try:
-            response = requests.post(url, headers=headers, json=data, timeout=30)
-            result = response.json()
-            
-            # 解析结果
-            content = result.get("choices", [{}])[0].get("message", {}).get("content", "")
-            
-            return [SearchResult(
-                title=f"Perplexity结果: {query}",
-                url="https://perplexity.ai",
-                content=content,
-                provider="perplexity"
-            )]
-        except Exception as e:
             return self._fallback_search(query, num)
     
     def _tavily_search(self, query: str, num: int) -> List[SearchResult]:
@@ -120,7 +81,7 @@ class AISearch:
 if __name__ == '__main__':
     import sys
     
-    provider = sys.argv[1] if len(sys.argv) > 1 else "perplexity"
+    provider = sys.argv[1] if len(sys.argv) > 1 else "tavily"
     query = sys.argv[2] if len(sys.argv) > 2 else "AI trends 2026"
     
     searcher = AISearch(provider=provider)

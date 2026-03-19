@@ -175,7 +175,7 @@ DAY 4:
           分析："该测试方案应派给工部+刑部+礼部协力完成"
           flow_log 记录："尚书省 → 六部：派发执行（兵吏合作）"
           state: Assigned → Doing, org: 尚书省 → 兵部+刑部+礼部
-          自动派发 bingbu/xingbu/libu 三个agent（并行）
+          自动派发 knights/inquisition/ceremony 三个agent（并行）
 
 DAY 4-5:
   (各部并行执行)
@@ -299,7 +299,7 @@ DAY 7：全部完成（比理想路径晚1-2天）
   "progress_log": [
     {
       "at": "2026-02-28T10:35:00Z",
-      "agent": "zhongshu",              // 汇报agent
+      "agent": "cardinal",              // 汇报agent
       "agentLabel": "中书省",
       "text": "已接旨。分析测试需求，拟定三层测试方案...",
       "state": "Zhongshu",              // 汇报时的状态快照
@@ -376,14 +376,14 @@ _STATE_FLOW = {
 
 ```python
 _STATE_AGENT_MAP = {
-    'Taizi':    'taizi',
-    'Zhongshu': 'zhongshu',
-    'Menxia':   'menxia',
-    'Assigned': 'shangshu',
+    'Taizi':    'pope',
+    'Zhongshu': 'cardinal',
+    'Menxia':   'cardinal_office',
+    'Assigned': 'bishop',
     'Doing':    None,      # 从 org 推断（六部之一）
     'Next':     None,      # 从 org 推断
-    'Review':   'shangshu',
-    'Pending':  'zhongshu',
+    'Review':   'bishop',
+    'Pending':  'cardinal',
 }
 ```
 
@@ -436,27 +436,27 @@ _STATE_AGENT_MAP = {
 {
   "agents": [
     {
-      "id": "taizi",
+      "id": "pope",
       "label": "太子",
-      "allowAgents": ["zhongshu"]
+      "allowAgents": ["cardinal"]
     },
     {
-      "id": "zhongshu",
+      "id": "cardinal",
       "label": "中书省",
-      "allowAgents": ["menxia", "shangshu"]
+      "allowAgents": ["cardinal_office", "bishop"]
     },
     {
-      "id": "menxia",
+      "id": "cardinal_office",
       "label": "门下省",
-      "allowAgents": ["shangshu", "zhongshu"]
+      "allowAgents": ["bishop", "cardinal"]
     },
     {
-      "id": "shangshu",
+      "id": "bishop",
       "label": "尚书省",
-      "allowAgents": ["libu", "hubu", "bingbu", "xingbu", "gongbu", "libu_hr"]
+      "allowAgents": ["ceremony", "treasury", "knights", "inquisition", "guild", "personnel"]
     },
     {
-      "id": "libu",
+      "id": "ceremony",
       "label": "礼部",
       "allowAgents": []
     },
@@ -685,7 +685,7 @@ _scheduler = {
     
     # 派发追踪
     'lastDispatchStatus': 'success',  # queued|success|failed|timeout|gateway-offline|error
-    'lastDispatchAgent': 'zhongshu',
+    'lastDispatchAgent': 'cardinal',
     'lastDispatchTrigger': 'state-transition',
     'lastDispatchError': '',          # 错误堆栈（如有）
     
@@ -781,7 +781,7 @@ T+360 (若仍未恢复):
   
   ✅ 阶段2：升级
   - escalationLevel: 0 → 1
-  - wake_agent('menxia', "💬 任务JJC-20260228-E2E停滞，中书省无反应，请介入")
+  - wake_agent('cardinal_office', "💬 任务JJC-20260228-E2E停滞，中书省无反应，请介入")
   - flow_log: "升级至门下省协调"
   
   门下省Agent被唤醒，可以：
@@ -795,7 +795,7 @@ T+540 (若仍未解决):
   
   ✅ 阶段3：再次升级
   - escalationLevel: 1 → 2
-  - wake_agent('shangshu', "💬 任务长期停滞，中书省+门下省都无法推进，尚书省请介入协调")
+  - wake_agent('bishop', "💬 任务长期停滞，中书省+门下省都无法推进，尚书省请介入协调")
   - flow_log: "升级至尚书省协调"
 
 T+720 (若仍未解决):
@@ -860,7 +860,7 @@ GET /api/task-activity/JJC-20260228-E2E
     "block": "无",
     "priority": "normal"
   },
-  "agentId": "shangshu",
+  "agentId": "bishop",
   "agentLabel": "尚书省",
   
   // ── 完整活动流（59条示例）──
@@ -878,7 +878,7 @@ GET /api/task-activity/JJC-20260228-E2E
       "at": "2026-02-28T10:35:00Z",
       "kind": "progress",
       "text": "已接旨。分析测试需求，拟定三层测试方案...",
-      "agent": "zhongshu",
+      "agent": "cardinal",
       "agentLabel": "中书省",
       "state": "Zhongshu",
       "org": "中书省",
@@ -895,7 +895,7 @@ GET /api/task-activity/JJC-20260228-E2E
         {"id": "2", "title": "方案设计", "status": "in-progress"},
         {"id": "3", "title": "await审议", "status": "not-started"}
       ],
-      "agent": "zhongshu",
+      "agent": "cardinal",
       "diff": {
         "changed": [{"id": "2", "from": "not-started", "to": "in-progress"}],
         "added": [],
@@ -926,7 +926,7 @@ GET /api/task-activity/JJC-20260228-E2E
   ],
   
   "activitySource": "progress+session",
-  "relatedAgents": ["taizi", "zhongshu", "menxia"],
+  "relatedAgents": ["pope", "cardinal", "cardinal_office"],
   "phaseDurations": [
     {
       "phase": "太子",
@@ -979,7 +979,7 @@ GET /api/task-activity/JJC-20260228-E2E
   "message": "JJC-20260228-E2E 已推进到下一阶段 (已自动派发 Agent)",
   "oldState": "Zhongshu",
   "newState": "Menxia",
-  "targetAgent": "menxia"
+  "targetAgent": "cardinal_office"
 }
 ```
 
@@ -1184,9 +1184,9 @@ if task_seems_done:
 **三省六部的"严格"方式**
 ```python
 # 任务状态严格受限，下一步由系统决定
-if task.state == 'Zhongshu' and agent_id == 'zhongshu':
+if task.state == 'Zhongshu' and agent_id == 'cardinal':
     # 只能做Zhongshu该做的事（起草方案）
-    deliver_plan_to_menxia()
+    deliver_plan_to_cardinal_office()
     
     # 状态转移只能通过API，不能绕过
     # 中书不能直接转尚书，必须经过门下审议
@@ -1263,14 +1263,14 @@ task['flow_log'].append({
 ```python
 # 中书省想绕过门下审议，直接咨询尚书省
 try:
-    result = dispatch_to_agent('shangshu', '请帮我审查一下这个方案')
+    result = dispatch_to_agent('bishop', '请帮我审查一下这个方案')
 except PermissionError:
     # ❌ 权限矩阵拦截
     log.error('zhongshu 无权调用 shangshu (仅限: menxia, shangshu)')
 
 # 门下省想升级到皇上
 try:
-    result = dispatch_to_agent('taizi', '我需要皇上的指示')
+    result = dispatch_to_agent('pope', '我需要皇上的指示')
 except PermissionError:
     # ❌ 权限矩阵拦截
     log.error('menxia 无权调用 taizi')
@@ -1362,7 +1362,7 @@ GET /api/agents-status
   },
   "agents": [
     {
-      "id": "taizi",
+      "id": "pope",
       "label": "太子",
       "status": "running",        // running|idle|offline|unconfigured
       "statusLabel": "🟢 运行中",

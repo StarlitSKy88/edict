@@ -6,17 +6,17 @@
       }
     },
     "list": [
-      {"id": "taizi", "workspace": "/app/.openclaw/workspace-taizi", "subagents": {"allowAgents": ["zhongshu"]}},
-      {"id": "zhongshu", "workspace": "/app/.openclaw/workspace-zhongshu", "subagents": {"allowAgents": ["menxia", "shangshu"]}},
-      {"id": "menxia", "workspace": "/app/.openclaw/workspace-menxia", "subagents": {"allowAgents": ["shangshu", "zhongshu"]}},
-      {"id": "shangshu", "workspace": "/app/.openclaw/workspace-shangshu", "subagents": {"allowAgents": ["zhongshu", "menxia", "hubu", "libu", "bingbu", "xingbu", "gongbu", "libu_hr"]}},
-      {"id": "hubu", "workspace": "/app/.openclaw/workspace-hubu", "subagents": {"allowAgents": ["shangshu"]}},
-      {"id": "libu", "workspace": "/app/.openclaw/workspace-libu", "subagents": {"allowAgents": ["shangshu"]}},
-      {"id": "bingbu", "workspace": "/app/.openclaw/workspace-bingbu", "subagents": {"allowAgents": ["shangshu"]}},
-      {"id": "xingbu", "workspace": "/app/.openclaw/workspace-xingbu", "subagents": {"allowAgents": ["shangshu"]}},
-      {"id": "gongbu", "workspace": "/app/.openclaw/workspace-gongbu", "subagents": {"allowAgents": ["shangshu"]}},
-      {"id": "libu_hr", "workspace": "/app/.openclaw/workspace-libu_hr", "subagents": {"allowAgents": ["shangshu"]}},
-      {"id": "zaochao", "workspace": "/app/.openclaw/workspace-zaochao", "subagents": {"allowAgents": []}}
+      {"id": "pope", "workspace": "/app/.openclaw/workspace-pope", "subagents": {"allowAgents": ["cardinal"]}},
+      {"id": "cardinal", "workspace": "/app/.openclaw/workspace-zhongshu", "subagents": {"allowAgents": ["cardinal_office", "bishop"]}},
+      {"id": "cardinal_office", "workspace": "/app/.openclaw/workspace-menxia", "subagents": {"allowAgents": ["bishop", "cardinal"]}},
+      {"id": "bishop", "workspace": "/app/.openclaw/workspace-shangshu", "subagents": {"allowAgents": ["cardinal", "cardinal_office", "treasury", "ceremony", "knights", "inquisition", "guild", "personnel"]}},
+      {"id": "treasury", "workspace": "/app/.openclaw/workspace-hubu", "subagents": {"allowAgents": ["bishop"]}},
+      {"id": "ceremony", "workspace": "/app/.openclaw/workspace-libu", "subagents": {"allowAgents": ["bishop"]}},
+      {"id": "knights", "workspace": "/app/.openclaw/workspace-bingbu", "subagents": {"allowAgents": ["bishop"]}},
+      {"id": "inquisition", "workspace": "/app/.openclaw/workspace-xingbu", "subagents": {"allowAgents": ["bishop"]}},
+      {"id": "guild", "workspace": "/app/.openclaw/workspace-gongbu", "subagents": {"allowAgents": ["bishop"]}},
+      {"id": "personnel", "workspace": "/app/.openclaw/workspace-personnel", "subagents": {"allowAgents": ["bishop"]}},
+      {"id": "astrologer", "workspace": "/app/.openclaw/workspace-astrologer", "subagents": {"allowAgents": []}}
     ]
   },
   "providers": {}

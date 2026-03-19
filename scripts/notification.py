@@ -149,4 +149,4 @@ from datetime import datetime
 
 if __name__ == '__main__':
     # 测试
-    notify_task_progress("JJC-001", "中书省", "规划方案", "正在分析需求...")
+    notify_task_progress("JJC-001", "红衣主教团", "规划方案", "正在分析需求...")

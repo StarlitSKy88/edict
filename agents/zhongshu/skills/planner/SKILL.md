@@ -1,7 +1,7 @@
-# 中书省 Skill - 任务规划与方案制定
+# 红衣主教团 Skill - 任务规划与方案制定
 
 ## 触发条件
-收到太子传来的旨意后调用
+收到教皇传来的旨意后调用
 
 ## 功能
 
@@ -29,16 +29,16 @@
 ## 使用方法
 
 ```bash
-python3 skills/zhongshu/planner.py --task "研发一款AI聊天机器人"
+python3 skills/cardinal/planner.py --task "研发一款AI聊天机器人"
 ```
 
 输出：
 ```json
 {
   "subtasks": [
-    {"title": "需求调研", "dept": "吏部", "days": 2},
-    {"title": "技术选型", "dept": "工部", "days": 1},
-    {"title": "开发", "dept": "工部", "days": 5}
+    {"title": "需求调研", "dept": "人事部", "days": 2},
+    {"title": "技术选型", "dept": "工匠行会", "days": 1},
+    {"title": "开发", "dept": "工匠行会", "days": 5}
   ],
   "risks": ["时间紧张", "技术难点"],
   "resources": ["开发人员", "服务器"]

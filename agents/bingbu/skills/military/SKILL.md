@@ -1,4 +1,4 @@
-# 兵部 Skill - 安全保障
+# 骑士团 Skill - 安全保障
 
 ## 功能
 1. 安全评估
@@ -6,4 +6,4 @@
 3. 应急方案
 
 ## 使用
-python3 skills/bingbu/military.py --task "任务"
+python3 skills/knights/military.py --task "任务"

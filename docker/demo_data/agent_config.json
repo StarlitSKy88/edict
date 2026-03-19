@@ -75,7 +75,7 @@
   ],
   "agents": [
     {
-      "id": "shangshu",
+      "id": "bishop",
       "label": "尚书省",
       "role": "尚书令",
       "duty": "派单与升级裁决",
@@ -87,35 +87,35 @@
       "skills": [
         {
           "name": "dispatch",
-          "path": "/Users/bingsen/.openclaw/workspace-shangshu/skills/dispatch/SKILL.md",
+          "path": "/Users/bingsen/.openclaw/workspace-bishop/skills/dispatch/SKILL.md",
           "exists": true,
           "description": "---"
         },
         {
           "name": "kanban-local",
-          "path": "/Users/bingsen/.openclaw/workspace-shangshu/skills/kanban-local/SKILL.md",
+          "path": "/Users/bingsen/.openclaw/workspace-bishop/skills/kanban-local/SKILL.md",
           "exists": true,
           "description": "---"
         },
         {
           "name": "organization-governance",
-          "path": "/Users/bingsen/.openclaw/workspace-shangshu/skills/organization-governance/SKILL.md",
+          "path": "/Users/bingsen/.openclaw/workspace-bishop/skills/organization-governance/SKILL.md",
           "exists": true,
           "description": "---"
         }
       ],
       "allowAgents": [
-        "zhongshu",
-        "menxia",
-        "hubu",
-        "libu",
-        "bingbu",
-        "xingbu",
-        "gongbu"
+        "cardinal",
+        "cardinal_office",
+        "treasury",
+        "ceremony",
+        "knights",
+        "inquisition",
+        "guild"
       ]
     },
     {
-      "id": "zhongshu",
+      "id": "cardinal",
       "label": "中书省",
       "role": "中书令",
       "duty": "起草任务令与优先级",
@@ -127,18 +127,18 @@
       "skills": [
         {
           "name": "planning",
-          "path": "/Users/bingsen/.openclaw/workspace-zhongshu/skills/planning/SKILL.md",
+          "path": "/Users/bingsen/.openclaw/workspace-cardinal/skills/planning/SKILL.md",
           "exists": true,
           "description": "---"
         }
       ],
       "allowAgents": [
-        "menxia",
-        "shangshu"
+        "cardinal_office",
+        "bishop"
       ]
     },
     {
-      "id": "menxia",
+      "id": "cardinal_office",
       "label": "门下省",
       "role": "侍中",
       "duty": "审议与退回机制",
@@ -150,18 +150,18 @@
       "skills": [
         {
           "name": "review",
-          "path": "/Users/bingsen/.openclaw/workspace-menxia/skills/review/SKILL.md",
+          "path": "/Users/bingsen/.openclaw/workspace-cardinal_office/skills/review/SKILL.md",
           "exists": true,
           "description": "---"
         }
       ],
       "allowAgents": [
-        "shangshu",
-        "zhongshu"
+        "bishop",
+        "cardinal"
       ]
     },
     {
-      "id": "hubu",
+      "id": "treasury",
       "label": "户部",
       "role": "户部尚书",
       "duty": "资源/预算/成本",
@@ -173,17 +173,17 @@
       "skills": [
         {
           "name": "data-analysis",
-          "path": "/Users/bingsen/.openclaw/workspace-hubu/skills/data-analysis/SKILL.md",
+          "path": "/Users/bingsen/.openclaw/workspace-treasury/skills/data-analysis/SKILL.md",
           "exists": true,
           "description": "---"
         }
       ],
       "allowAgents": [
-        "shangshu"
+        "bishop"
       ]
     },
     {
-      "id": "libu",
+      "id": "ceremony",
       "label": "礼部",
       "role": "礼部尚书",
       "duty": "文档/汇报/规范",
@@ -195,17 +195,17 @@
       "skills": [
         {
           "name": "doc-writer",
-          "path": "/Users/bingsen/.openclaw/workspace-libu/skills/doc-writer/SKILL.md",
+          "path": "/Users/bingsen/.openclaw/workspace-ceremony/skills/doc-writer/SKILL.md",
           "exists": true,
           "description": "---"
         }
       ],
       "allowAgents": [
-        "shangshu"
+        "bishop"
       ]
     },
     {
-      "id": "bingbu",
+      "id": "knights",
       "label": "兵部",
       "role": "兵部尚书",
       "duty": "应急与巡检",
@@ -217,17 +217,17 @@
       "skills": [
         {
           "name": "coding",
-          "path": "/Users/bingsen/.openclaw/workspace-bingbu/skills/coding/SKILL.md",
+          "path": "/Users/bingsen/.openclaw/workspace-knights/skills/coding/SKILL.md",
           "exists": true,
           "description": "---"
         }
       ],
       "allowAgents": [
-        "shangshu"
+        "bishop"
       ]
     },
     {
-      "id": "xingbu",
+      "id": "inquisition",
       "label": "刑部",
       "role": "刑部尚书",
       "duty": "合规/审计/红线",
@@ -239,17 +239,17 @@
       "skills": [
         {
           "name": "security-review",
-          "path": "/Users/bingsen/.openclaw/workspace-xingbu/skills/security-review/SKILL.md",
+          "path": "/Users/bingsen/.openclaw/workspace-inquisition/skills/security-review/SKILL.md",
           "exists": true,
           "description": "---"
         }
       ],
       "allowAgents": [
-        "shangshu"
+        "bishop"
       ]
     },
     {
-      "id": "gongbu",
+      "id": "guild",
       "label": "工部",
       "role": "工部尚书",
       "duty": "工程交付与自动化",
@@ -261,13 +261,13 @@
       "skills": [
         {
           "name": "ops",
-          "path": "/Users/bingsen/.openclaw/workspace-gongbu/skills/ops/SKILL.md",
+          "path": "/Users/bingsen/.openclaw/workspace-guild/skills/ops/SKILL.md",
           "exists": true,
           "description": "---"
         }
       ],
       "allowAgents": [
-        "shangshu"
+        "bishop"
       ]
     }
   ]
