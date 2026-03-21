@@ -10,6 +10,13 @@ Endpoints:
   POST /api/set-model          → {agentId, model}
   GET  /api/model-change-log   → data/model_change_log.json
   GET  /api/last-result        → data/last_model_change_result.json
+  
+  # LLM Gateway API (统一 LLM 服务层)
+  GET  /api/llm/status         → 获取 LLM 配置状态
+  POST /api/llm/set-global-model → {model} 设置全局默认模型
+  POST /api/llm/set-agent-model  → {agentId, model} 设置 Agent 模型
+  POST /api/llm/set-api-key      → {provider, apiKey} 设置 API Key
+  POST /api/llm/models         → 获取可用模型列表
 """
 import json, pathlib, subprocess, sys, threading, argparse, datetime, logging, re, os
 from http.server import BaseHTTPRequestHandler, HTTPServer
@@ -27,6 +34,7 @@ from court_discuss import (
     list_sessions as cd_list, destroy_session as cd_destroy,
     get_fate_event as cd_fate, OFFICIAL_PROFILES as CD_PROFILES,
 )
+from llm_gateway import LLMGateway, get_status as llm_get_status
 
 log = logging.getLogger('server')
 logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(name)s] %(message)s', datefmt='%H:%M:%S')
@@ -2481,6 +2489,80 @@ class Handler(BaseHTTPRequestHandler):
                 return cfg
             atomic_json_update(DATA / 'agent_config.json', _set_channel, {})
             self.send_json({'ok': True, 'message': f'派发渠道已切换为 {channel}'})
+
+        # ══ LLM Gateway API ══
+        elif p == '/api/llm/status':
+            # 获取 LLM Gateway 状态
+            self.send_json({
+                'ok': True,
+                'data': llm_get_status()
+            })
+            return
+
+        elif p == '/api/llm/set-global-model':
+            # 设置全局默认模型
+            model = body.get('model', '').strip()
+            if not model:
+                self.send_json({'ok': False, 'error': 'model required'}, 400)
+                return
+            llm = LLMGateway()
+            ok = llm.set_default_model(model)
+            if ok:
+                self.send_json({'ok': True, 'message': f'全局默认模型已设置为: {model}'})
+            else:
+                self.send_json({'ok': False, 'error': '设置失败'}, 500)
+            return
+
+        elif p == '/api/llm/set-agent-model':
+            # 设置单个 Agent 的模型
+            agent_id = body.get('agentId', '').strip()
+            model = body.get('model', '').strip()
+            if not agent_id:
+                self.send_json({'ok': False, 'error': 'agentId required'}, 400)
+                return
+            llm = LLMGateway()
+            ok = llm.set_agent_model(agent_id, model)
+            msg = f'Agent {agent_id} 模型已设置为: {model}' if model else f'Agent {agent_id} 已恢复使用全局默认'
+            if ok:
+                self.send_json({'ok': True, 'message': msg})
+            else:
+                self.send_json({'ok': False, 'error': '设置失败'}, 500)
+            return
+
+        elif p == '/api/llm/set-api-key':
+            # 设置 API Key
+            provider = body.get('provider', '').strip()
+            api_key = body.get('apiKey', '').strip()
+            if not provider or not api_key:
+                self.send_json({'ok': False, 'error': 'provider and apiKey required'}, 400)
+                return
+            llm = LLMGateway()
+            ok = llm.set_api_key(provider, api_key)
+            if ok:
+                self.send_json({'ok': True, 'message': f'{provider} API Key 已更新'})
+            else:
+                self.send_json({'ok': False, 'error': '设置失败'}, 500)
+            return
+
+        elif p == '/api/llm/models':
+            # 获取可用模型列表
+            force = body.get('forceRefresh', False)
+            llm = LLMGateway()
+            models = llm.get_available_models(force_refresh=force)
+            self.send_json({
+                'ok': True,
+                'models': [
+                    {
+                        'id': m.id,
+                        'name': m.name,
+                        'provider': m.provider,
+                        'price': m.price,
+                        'context': m.context_window,
+                    }
+                    for m in models
+                ]
+            })
+            return
 
         # ── 朝堂议政 POST ──
         elif p == '/api/court-discuss/start':

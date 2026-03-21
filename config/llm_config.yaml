@@ -1,0 +1,47 @@
+# LLM Gateway 配置文件
+# 用户只需配置一次 API Key，所有 Agent 共享
+
+llm:
+  # 全局默认配置
+  default_provider: "openrouter"
+  default_model: "deepseek/deepseek-chat"
+  
+  # API Keys（支持环境变量）
+  # 使用格式: ${ENV_VAR} 或直接填写值
+  api_keys:
+    openrouter: "${OPENROUTER_API_KEY}"
+    openai: "${OPENAI_API_KEY}"
+    anthropic: "${ANTHROPIC_API_KEY}"
+    github: "${GITHUB_TOKEN}"  # GitHub Copilot
+  
+  # Agent 模型覆盖（不同 Agent 可用不同模型）
+  # 优先级: agent_models[agent_id] > default_model
+  agent_models:
+    # taizi: "anthropic/claude-sonnet-4-6"
+    # gongbu: "deepseek/deepseek-chat"
+    # hubu: "qwen/qwen-2.5-7b-instruct"
+    # 可以在这里为每个 Agent 单独配置模型
+  
+  # 可用模型列表（用于 Dashboard 切换面板）
+  # 模型信息从 OpenRouter API 动态获取，也可手动配置
+  available_models: []
+  # 手动配置示例:
+  # - id: "deepseek/deepseek-chat"
+  #   name: "DeepSeek Chat"
+  #   provider: "openrouter"
+  #   price: "免费"
+  #   context_window: 64000
+  # - id: "qwen/qwen-2.5-7b-instruct"
+  #   name: "Qwen 2.5"
+  #   provider: "openrouter"
+  #   price: "免费"
+  #   context_window: 32000
+
+# 渠道配置
+channels:
+  dispatch: "feishu"  # 派发渠道: feishu/telegram/wecom/signal/tui
+
+# 缓存配置
+cache:
+  enabled: true
+  models_ttl: 3600  # 模型列表缓存时间(秒)
