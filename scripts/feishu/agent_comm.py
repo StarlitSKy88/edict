@@ -192,6 +192,280 @@ class FeishuClient:
             log.error(f"消息发送异常: {e}")
             return None
     
+    def send_rich_text_message(self, receive_id: str, receive_id_type: str = "chat_id",
+                                content: str = "", mentions: List[dict] = None) -> Optional[dict]:
+        """
+        发送富文本消息（支持@提及）
+        
+        Args:
+            receive_id: 接收者ID (chat_id 或 user_id)
+            receive_id_type: 接收者类型 ("chat_id" / "user_id" / "open_id")
+            content: 消息内容
+            mentions: @提及的用户列表 [{"id": "ou_xxx", "name": "张三"}]
+        
+        Returns:
+            发送结果
+        """
+        token = self._get_access_token()
+        if not token:
+            return None
+        
+        # 构建富文本内容
+        rich_text_content = self._build_rich_text(content, mentions)
+        
+        url = f"{self.base_url}/im/v1/messages"
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json; charset=utf-8"
+        }
+        
+        params = {"receive_id_type": receive_id_type}
+        
+        data = {
+            "receive_id": receive_id,
+            "msg_type": "rich_text",
+            "content": json.dumps(rich_text_content)
+        }
+        
+        try:
+            resp = requests.post(url, headers=headers, json=data, params=params, timeout=10)
+            result = resp.json()
+            if result.get("code") == 0:
+                log.info(f"富文本消息发送成功: {receive_id}")
+                return result
+            else:
+                log.error(f"富文本消息发送失败: {result}")
+                return result
+        except Exception as e:
+            log.error(f"富文本消息发送异常: {e}")
+            return None
+    
+    def _build_rich_text(self, content: str, mentions: List[dict] = None) -> dict:
+        """
+        构建富文本消息内容（支持@）
+        
+        飞书rich_text格式:
+        {
+            "type": "markdown",
+            "content": "内容 **加粗** @张三"
+        }
+        或使用原生rich_text:
+        {
+            "type": "native",
+            "elements": [...]
+        }
+        """
+        # 简单方案：使用markdown类型，支持@语法
+        # @用户格式: <at id=all></at> @所有人
+        # @指定人: <at id=ou_xxx></at>
+        
+        at_mentions = ""
+        if mentions:
+            for m in mentions:
+                user_id = m.get('id', '')
+                user_name = m.get('name', '用户')
+                if user_id:
+                    # 飞书at特定人格式
+                    at_mentions += f'<at id="{user_id}" name="{user_name}"></at> '
+        
+        # 组合消息：@ + 内容
+        full_content = at_mentions + content if at_mentions else content
+        
+        return {
+            "type": "markdown",
+            "content": full_content
+        }
+    
+    def send_group_message_with_mentions(self, chat_id: str, content: str,
+                                          mention_user_ids: List[str] = None,
+                                          mention_all: bool = False) -> Optional[dict]:
+        """
+        在群聊中发送消息，支持@提及
+        
+        Args:
+            chat_id: 群聊ID
+            content: 消息内容
+            mention_user_ids: 需要@的用户ID列表
+            mention_all: 是否@所有人
+        
+        Returns:
+            发送结果
+        """
+        # 构建提及列表
+        mentions = []
+        if mention_all:
+            # @所有人
+            mentions = [{"id": "all", "name": "所有人"}]
+        elif mention_user_ids:
+            for uid in mention_user_ids:
+                mentions.append({"id": uid, "name": "用户"})
+        
+        return self.send_rich_text_message(
+            receive_id=chat_id,
+            receive_id_type="chat_id",
+            content=content,
+            mentions=mentions
+        )
+    
+    def create_agent_group_chat(self, agent_ids: List[str], 
+                                 agent_names: Dict[str, str] = None,
+                                 name: str = "Agent 群聊") -> Optional[str]:
+        """
+        创建Agent群聊并拉入多个Agent
+        
+        Args:
+            agent_ids: Agent ID列表
+            agent_names: Agent名称映射 {"agent_id": "名称"}
+            name: 群聊名称
+        
+        Returns:
+            chat_id 或 None
+        """
+        token = self._get_access_token()
+        if not token:
+            return None
+        
+        # 获取用户ID列表（需要先将Agent注册为用户或有对应的user_id）
+        # 这里假设agent_ids就是user_id
+        user_ids = agent_ids
+        
+        url = f"{self.base_url}/im/v1/chats"
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json; charset=utf-8"
+        }
+        
+        data = {
+            "name": name,
+            "user_id_list": user_ids,
+            "chat_type": "group"
+        }
+        
+        try:
+            resp = requests.post(url, headers=headers, json=data, timeout=10)
+            result = resp.json()
+            if result.get("code") == 0:
+                chat_id = result["data"]["chat_id"]
+                log.info(f"创建Agent群聊成功: {chat_id}, 成员: {user_ids}")
+                return chat_id
+            else:
+                log.error(f"创建群聊失败: {result}")
+                return None
+        except Exception as e:
+            log.error(f"创建群聊异常: {e}")
+            return None
+    
+    def add_members_to_chat(self, chat_id: str, user_ids: List[str]) -> bool:
+        """
+        添加成员到群聊
+        
+        Args:
+            chat_id: 群聊ID
+            user_ids: 要添加的用户ID列表
+        
+        Returns:
+            是否成功
+        """
+        token = self._get_access_token()
+        if not token:
+            return False
+        
+        url = f"{self.base_url}/im/v1/chats/{chat_id}/members"
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json; charset=utf-8"
+        }
+        
+        data = {
+            "member_id_list": user_ids,
+            "member_id_type": "user_id"
+        }
+        
+        try:
+            resp = requests.post(url, headers=headers, json=data, timeout=10)
+            result = resp.json()
+            if result.get("code") == 0:
+                log.info(f"添加成员成功: {chat_id}, 新成员: {user_ids}")
+                return True
+            else:
+                log.error(f"添加成员失败: {result}")
+                return False
+        except Exception as e:
+            log.error(f"添加成员异常: {e}")
+            return False
+    
+    def remove_members_from_chat(self, chat_id: str, user_ids: List[str]) -> bool:
+        """
+        从群聊移除成员
+        
+        Args:
+            chat_id: 群聊ID
+            user_ids: 要移除的用户ID列表
+        
+        Returns:
+            是否成功
+        """
+        token = self._get_access_token()
+        if not token:
+            return False
+        
+        url = f"{self.base_url}/im/v1/chats/{chat_id}/members"
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json; charset=utf-8"
+        }
+        
+        params = {
+            "member_id_list": ",".join(user_ids),
+            "member_id_type": "user_id"
+        }
+        
+        try:
+            resp = requests.delete(url, headers=headers, params=params, timeout=10)
+            result = resp.json()
+            if result.get("code") == 0:
+                log.info(f"移除成员成功: {chat_id}, 移除成员: {user_ids}")
+                return True
+            else:
+                log.error(f"移除成员失败: {result}")
+                return False
+        except Exception as e:
+            log.error(f"移除成员异常: {e}")
+            return False
+    
+    def get_chat_members(self, chat_id: str) -> List[dict]:
+        """
+        获取群聊成员列表
+        
+        Args:
+            chat_id: 群聊ID
+        
+        Returns:
+            成员列表
+        """
+        token = self._get_access_token()
+        if not token:
+            return []
+        
+        url = f"{self.base_url}/im/v1/chats/{chat_id}/members"
+        headers = {
+            "Authorization": f"Bearer {token}"
+        }
+        
+        params = {
+            "member_id_type": "user_id"
+        }
+        
+        try:
+            resp = requests.get(url, headers=headers, params=params, timeout=10)
+            result = resp.json()
+            if result.get("code") == 0:
+                return result.get("data", {}).get("items", [])
+            return []
+        except Exception as e:
+            log.error(f"获取群成员异常: {e}")
+            return []
+    
     def reply_message(self, message_id: str, content: str, msg_type: str = "text") -> Optional[dict]:
         """回复消息"""
         token = self._get_access_token()
@@ -354,6 +628,172 @@ class FeishuAgentComm:
         
         # Agent注册表 (agent_id -> open_id)
         self._registry: Dict[str, str] = {}
+        
+        # 群聊缓存 (agent_group_id -> chat_id)
+        self._group_chats: Dict[str, str] = {}
+    
+    # ==================== 群聊通信 ====================
+    
+    def create_or_get_group_chat(self, agent_ids: List[str], 
+                                   group_name: str = None) -> Optional[str]:
+        """
+        创建或获取Agent群聊
+        
+        Args:
+            agent_ids: 参与群聊的Agent ID列表
+            group_name: 群聊名称（可选）
+        
+        Returns:
+            chat_id 或 None
+        """
+        # 生成群聊唯一ID（排序保证一致性）
+        sorted_ids = sorted(agent_ids)
+        group_key = "_".join(sorted_ids)
+        
+        # 检查缓存
+        if group_key in self._group_chats:
+            return self._group_chats[group_key]
+        
+        # 创建新群聊
+        if group_name is None:
+            agent_count = len(agent_ids)
+            group_name = f"Agent 群聊 ({agent_count}人)"
+        
+        # 转换agent_id为user_id（这里假设agent_id就是user_id）
+        user_ids = agent_ids
+        
+        chat_id = self.client.create_agent_group_chat(
+            agent_ids=user_ids,
+            agent_names=None,
+            name=group_name
+        )
+        
+        if chat_id:
+            self._group_chats[group_key] = chat_id
+        
+        return chat_id
+    
+    def send_to_group(self, chat_id: str, content: str,
+                       mention_agent_ids: List[str] = None,
+                       mention_all: bool = False) -> bool:
+        """
+        发送消息到群聊，支持@提及
+        
+        Args:
+            chat_id: 群聊ID
+            content: 消息内容
+            mention_agent_ids: 需要@的Agent ID列表
+            mention_all: 是否@所有人
+        
+        Returns:
+            是否成功
+        """
+        # 转换agent_id为open_id
+        mention_user_ids = None
+        if mention_agent_ids:
+            mention_user_ids = [
+                self._registry.get(aid) for aid in mention_agent_ids
+                if self._registry.get(aid)
+            ]
+        
+        result = self.client.send_group_message_with_mentions(
+            chat_id=chat_id,
+            content=content,
+            mention_user_ids=mention_user_ids,
+            mention_all=mention_all
+        )
+        
+        return result and result.get("code") == 0
+    
+    def broadcast_to_agents(self, agent_ids: List[str], content: str,
+                             mention_senders: bool = True) -> Dict[str, bool]:
+        """
+        广播消息给多个Agent（在群聊中发送）
+        
+        Args:
+            agent_ids: 目标Agent ID列表
+            content: 消息内容
+            mention_senders: 是否在消息中@发送者
+        
+        Returns:
+            发送结果 {"agent_id": success, ...}
+        """
+        results = {}
+        
+        # 创建群聊
+        chat_id = self.create_or_get_group_chat(agent_ids)
+        if not chat_id:
+            for aid in agent_ids:
+                results[aid] = False
+            return results
+        
+        # 在群聊中发送消息，@所有人
+        success = self.send_to_group(
+            chat_id=chat_id,
+            content=content,
+            mention_all=True
+        )
+        
+        for aid in agent_ids:
+            results[aid] = success
+        
+        return results
+    
+    def group_discuss(self, agent_ids: List[str], topic: str,
+                       initiator: str = None) -> Optional[str]:
+        """
+        发起Agent群组讨论
+        
+        Args:
+            agent_ids: 参与讨论的Agent列表
+            topic: 讨论主题
+            initiator: 发起人Agent ID（默认自己）
+        
+        Returns:
+            chat_id 或 None
+        """
+        if initiator is None:
+            initiator = self.agent_id
+        
+        # 创建群聊
+        chat_id = self.create_or_get_group_chat(
+            agent_ids=agent_ids,
+            group_name=f"讨论: {topic}"
+        )
+        
+        if not chat_id:
+            return None
+        
+        # 发送讨论主题
+        content = f"📢 **讨论主题**: {topic}\n\n发起人: {initiator}\n请各Agent发表意见。"
+        
+        self.send_to_group(
+            chat_id=chat_id,
+            content=content,
+            mention_all=True
+        )
+        
+        return chat_id
+    
+    def add_agent_to_group(self, chat_id: str, agent_id: str) -> bool:
+        """将Agent添加到现有群聊"""
+        open_id = self._registry.get(agent_id)
+        if not open_id:
+            log.error(f"未找到Agent: {agent_id}")
+            return False
+        return self.client.add_members_to_chat(chat_id, [open_id])
+    
+    def remove_agent_from_group(self, chat_id: str, agent_id: str) -> bool:
+        """从群聊移除Agent"""
+        open_id = self._registry.get(agent_id)
+        if not open_id:
+            log.error(f"未找到Agent: {agent_id}")
+            return False
+        return self.client.remove_members_from_chat(chat_id, [open_id])
+    
+    def get_group_members(self, chat_id: str) -> List[dict]:
+        """获取群聊成员列表"""
+        return self.client.get_chat_members(chat_id)
     
     def register_handler(self, event_type: str, handler: Callable):
         """注册消息处理器"""
