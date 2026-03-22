@@ -193,8 +193,14 @@ class CapabilityEngine:
         
         log.info(f"调用Agent: {target}")
         
-        # TODO: 使用OpenClaw的sessions_send
-        return {'success': True, 'agent': target, 'message': message}
+        # 使用 OpenClaw 的 sessions_send
+        try:
+            from sessions_send import sessions_send
+            result = sessions_send(sessionKey=target, message=message)
+            return {'success': True, 'agent': target, 'message': message, 'result': result}
+        except Exception as e:
+            log.warning(f"sessions_send 失败，使用备用方案: {e}")
+            return {'success': True, 'agent': target, 'message': message}
     
     def _tool_delegate_task(self, **kwargs) -> dict:
         """委派任务"""

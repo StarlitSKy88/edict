@@ -23,7 +23,14 @@
   # 查看统计
   python3 kanban_update.py stats
 """
-import json, pathlib, sys, subprocess, logging, os, re, datetime
+import datetime
+import json
+import logging
+import os
+import pathlib
+import re
+import subprocess
+import sys
 
 _BASE = pathlib.Path(__file__).resolve().parent.parent
 TASKS_FILE = _BASE / 'data' / 'tasks_source.json'
