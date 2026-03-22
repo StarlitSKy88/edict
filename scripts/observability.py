@@ -217,8 +217,19 @@ class Observability:
         """注册默认健康检查"""
         # Agent状态检查
         def check_agents():
-            # TODO: 检查Agent进程状态
-            return {'agents_active': 0}
+            """检查Agent进程状态"""
+            try:
+                # 读取 live_status.json 获取 Agent 状态
+                status_file = pathlib.Path(__file__).parent.parent / 'data' / 'live_status.json'
+                if status_file.exists():
+                    import json
+                    data = json.loads(status_file.read_text())
+                    agents = data.get('agents', {})
+                    active = sum(1 for a in agents.values() if a.get('status') == 'active')
+                    return {'agents_active': active, 'agents_total': len(agents)}
+                return {'agents_active': 0, 'agents_total': 0}
+            except Exception as e:
+                return {'agents_active': 0, 'error': str(e)}
         
         # 磁盘检查
         def check_disk():
