@@ -234,8 +234,28 @@ class ErrorHandler:
     
     def _send_alert(self, error: EdictError):
         """发送告警"""
-        # TODO: 集成飞书/钉钉告警
-        log.warning(f"🚨 告警: {error.error_type.value} - {error.message}")
+        alert_msg = f"🚨 告警: {error.error_type.value} - {error.message}"
+        log.warning(alert_msg)
+        
+        # 发送到飞书Webhook (如果配置了)
+        webhook_url = os.environ.get('FEISHU_WEBHOOK_URL')
+        if webhook_url:
+            try:
+                import requests
+                payload = {"msg_type": "text", "content": {"text": alert_msg}}
+                requests.post(webhook_url, json=payload, timeout=5)
+            except Exception as e:
+                log.error(f"飞书Webhook发送失败: {e}")
+        
+        # 发送到钉钉Webhook (如果配置了)
+        dingtalk_url = os.environ.get('DINGTALK_WEBHOOK_URL')
+        if dingtalk_url:
+            try:
+                import requests
+                payload = {"msgtype": "text", "text": {"content": alert_msg}}
+                requests.post(dingtalk_url, json=payload, timeout=5)
+            except Exception as e:
+                log.error(f"钉钉Webhook发送失败: {e}")
     
     def get_stats(self) -> dict:
         """获取错误统计"""
