@@ -5,8 +5,8 @@
 
 ## 🔍 分析范围
 - scripts/ 目录 (8个脚本)
-- edict/backend/ (后端 API)
-- edict/frontend/ (前端)
+- nick/backend/ (后端 API)
+- nick/frontend/ (前端)
 - agents/ (11个Agent配置)
 - install.sh (安装脚本)
 

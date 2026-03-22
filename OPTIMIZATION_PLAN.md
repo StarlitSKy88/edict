@@ -1,4 +1,4 @@
-# Edict 项目系统性优化计划 (100 项)
+# Nick 项目系统性优化计划 (100 项)
 
 ## Phase 1: 核心稳定性优化 (1-30)
 
@@ -53,4 +53,4 @@
 - OPTIMIZATION_PLAN.md 创建
 
 ### 📝 项目位置
-`/workspace/edict-main/`
+`/workspace/nick-main/`

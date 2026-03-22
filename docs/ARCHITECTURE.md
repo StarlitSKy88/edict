@@ -1,4 +1,4 @@
-# Edict 系统架构文档
+# Nick 系统架构文档
 
 **版本**: 3.0  
 **更新日期**: 2026-03-22
@@ -7,7 +7,7 @@
 
 ## 一、系统概述
 
-Edict（三省六部）是一个基于 OpenClaw 构建的多 Agent 协作系统，采用中国古代官僚制度设计，实现 Agent 之间的有序协作和任务流转。
+Nick（三省六部）是一个基于 OpenClaw 构建的多 Agent 协作系统，采用中国古代官僚制度设计，实现 Agent 之间的有序协作和任务流转。
 
 ### 核心特性
 - 🏛️ 层级架构 - 严格的上下级关系
@@ -191,7 +191,7 @@ grep ERROR logs/*.log
 
 生产环境建议使用 PostgreSQL + Redis，运行迁移脚本：
 ```bash
-python3 edict/migration/migrate_json_to_pg.py
+python3 nick/migration/migrate_json_to_pg.py
 ```
 
 ---

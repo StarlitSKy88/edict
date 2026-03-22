@@ -1,4 +1,4 @@
-# Edict Agent 通信与记忆系统优化方案
+# Nick Agent 通信与记忆系统优化方案
 
 ## 一、当前问题分析
 
@@ -305,7 +305,7 @@ class TaskStateMachine:
 ```python
 #!/usr/bin/env python3
 """
-Edict 记忆系统 - 多级记忆 + 向量检索
+Nick 记忆系统 - 多级记忆 + 向量检索
 """
 from dataclasses import dataclass
 from datetime import datetime
@@ -338,7 +338,7 @@ class Memory:
             self.accessed_at = datetime.now()
 
 class MemorySystem:
-    """Edict 记忆系统"""
+    """Nick 记忆系统"""
     
     def __init__(self, redis_url: str = "redis://localhost:6379"):
         self.redis_url = redis_url
@@ -417,7 +417,7 @@ class MemorySystem:
 
 ### 3.3 与 mem0/Graphiti 对比
 
-| 特性 | Edict 记忆 | mem0 | Graphiti |
+| 特性 | Nick 记忆 | mem0 | Graphiti |
 |------|-----------|------|----------|
 | 存储方式 | PostgreSQL + Redis + 向量 | 向量 + 图 | 时序图谱 |
 | 多级记忆 | ✅ 工作/短期/长期 | 基础 | 基础 |

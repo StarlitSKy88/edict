@@ -1,4 +1,4 @@
-# Edict Agent 架构重设计文档
+# Nick Agent 架构重设计文档
 
 ## 1. 设计目标
 - **可观测性**：Dashboard 能实时显示每个 agent 的思考流（thoughts）和 todo 变更。

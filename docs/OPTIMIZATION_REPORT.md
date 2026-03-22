@@ -1,7 +1,7 @@
-# Edict 项目完整问题分析与优化方案
+# Nick 项目完整问题分析与优化方案
 
 **生成时间**: 2026-03-22  
-**项目**: 三省六部·Edict  
+**项目**: 三省六部·Nick  
 **代码规模**: 91个Python文件, 15000+行代码
 
 ---
@@ -12,7 +12,7 @@
 
 | 问题 | 描述 | 影响 |
 |-----|------|------|
-| JSON模式 vs Postgres模式 | `kanban_update.py` 操作 JSON 文件，`edict/backend` 使用 Postgres+Redis | 数据不互通，用户困惑 |
+| JSON模式 vs Postgres模式 | `kanban_update.py` 操作 JSON 文件，`nick/backend` 使用 Postgres+Redis | 数据不互通，用户困惑 |
 | 迁移文档缺失 | 没有清晰的迁移指南 | 用户不敢切换模式 |
 
 **优化建议**:
@@ -31,7 +31,7 @@ def get_task_service():
 |-----|------|
 | `scripts/` | 15个核心脚本，职责重叠 |
 | `dashboard/server.py` | 2600+行，既是API又是前端服务器 |
-| `edict/backend/` | 与 scripts 功能大量重复 |
+| `nick/backend/` | 与 scripts 功能大量重复 |
 
 **优化建议**: 拆分 server.py 为独立模块
 ```

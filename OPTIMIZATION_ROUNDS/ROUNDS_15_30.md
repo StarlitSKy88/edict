@@ -1,4 +1,4 @@
-# Edict 第 15-30 轮优化记录
+# Nick 第 15-30 轮优化记录
 
 ## 第 15 轮: 监控脚本
 - scripts/monitor.py - 任务监控

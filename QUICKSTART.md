@@ -1,7 +1,7 @@
-# 🚀 Edict 优化版快速使用指南
+# 🚀 Nick 优化版快速使用指南
 
 ## 📦 项目位置
-`/workspace/edict-main/`
+`/workspace/nick-main/`
 
 ---
 
@@ -9,7 +9,7 @@
 
 ### 方式一: 一键启动 (推荐)
 ```bash
-cd /workspace/edict-main
+cd /workspace/nick-main
 bash start.sh
 ```
 
@@ -17,11 +17,11 @@ bash start.sh
 
 ```bash
 # 1. 启动看板服务器
-cd /workspace/edict-main/dashboard
+cd /workspace/nick-main/dashboard
 python3 server.py --port 7891
 
 # 2. 启动数据刷新 (新终端)
-cd /workspace/edict-main
+cd /workspace/nick-main
 bash scripts/run_loop.sh
 ```
 
@@ -133,4 +133,4 @@ python3 scripts/kanban_update.py stats
 
 ---
 
-**项目位置**: `/workspace/edict-main/`
+**项目位置**: `/workspace/nick-main/`
