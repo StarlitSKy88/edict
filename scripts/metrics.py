@@ -12,7 +12,6 @@ import psutil
 from typing import Dict, Optional, Any
 from dataclasses import dataclass, field
 from pathlib import Path
-from pathlib import Path
 import json
 
 BASE = Path(__file__).parent.parent

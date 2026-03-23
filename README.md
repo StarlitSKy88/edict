@@ -1,4 +1,4 @@
-# Nick - 神圣帝国 AI Agent 系统
+# Nick - 一人公司/轻团队 飞书/钉钉专属 AI 协作Agent系统
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.11+-blue.svg" alt="Python">
@@ -8,733 +8,483 @@
 
 ## 📋 项目简介
 
-Nick 是一个基于「神圣罗马帝国」官僚制度设计的多 Agent 协作系统。通过层级化的架构设计，实现 Agent 之间的有序协作、通信和任务流转。
+Nick 是一款专为**一人公司（OPC）、独立开发者、微型创业团队**打造的，跑在飞书/钉钉群内的多Agent协作系统。
 
-每个 Agent 如同帝国中的各个职能部门，各司其职，协同工作。系统支持自主决策、自我学习、持续进化，是新一代企业级 AI Agent 解决方案。
-
-## 🏛️ 组织架构
-
-```
-                              ┌─────────────┐
-                              │    教皇     │
-                              │   (Pope)    │
-                              │ 最高决策者   │
-                              └──────┬──────┘
-                                     │
-              ┌──────────────────────┼──────────────────────┐
-              │                      │                      │
-     ┌────────▼────────┐   ┌────────▼────────┐
-     │   红衣主教团     │   │    主教团        │
-     │  (Cardinal)     │   │   (Bishop)      │
-     │     规划决策     │   │    执行调度     │
-     └────────┬────────┘   └────────┬────────┘
-              │                      │
-     ┌────────▼────────┐   ┌────────▼─────────────────────┐
-     │     枢机处       │   │                              │
-     │(Cardinal Office)│   │         六部                 │
-     │     审核审批     │   │                              │
-     └─────────────────┘   └────────┬────────────────────┘
-                                      │
-    ┌─────────┬─────────┬─────────┬──────┴──────┬─────────┬─────────┐
-    │ 工匠行会 │ 财政部  │ 骑士团  │ 宗教裁判所  │ 典礼部   │ 人事部   │
-    │  Guild  │Treasury │ Knights │Inquisition│ Ceremony│ Personnel│
-    │ 技术工程 │  财务   │  安全   │   合规    │  文档   │   人事   │
-    └─────────┴─────────┴─────────┴───────────┴─────────┴─────────┘
-                                            │
-                                  ┌─────────▼─────────┐
-                                  │    占星术士        │
-                                  │  (Astrologer)     │
-                                  │   观测监控        │
-                                  └───────────────────┘
-```
-
-### 职能说明
-
-| 职位 | ID | 职能 |
-|-----|-----|------|
-| **教皇** | pope | 最高决策者，负责全局规划、任务分发 |
-| **红衣主教团** | cardinal | 规划决策，制定战略，任务拆解 |
-| **主教团** | bishop | 执行调度，协调各部门，任务派发 |
-| **枢机处** | cardinal_office | 审核审批，质量把控，风险评估 |
-| **工匠行会** | guild | 技术开发，工程建设，系统架构 |
-| **财政部** | treasury | 财务预算，成本控制，投资决策 |
-| **骑士团** | knights | 安全防护，风险管理，安全保障 |
-| **宗教裁判所** | inquisition | 合规审查，法务支持，规则制定 |
-| **典礼部** | ceremony | 文档管理，外交接待，文化建设 |
-| **人事部** | personnel | 人力资源，人才培养，绩效评估 |
-| **占星术士** | astrologer | 观测监控，数据分析，趋势预测 |
-| **创业军师** | startup | AI创业辅助，四大军师团队 |
-
----
-
-## 🚀 创业军师模块 (Startup)
-
-Nick 系统集成了 AI 创业军师模块，为创业者提供全方位的辅助服务。
-
-### 四大军师
-
-| 军师 | ID | 职能 |
-|-----|-----|------|
-| **收益军师** | advisor-profit | 算账、回本周期、盈利预测 |
-| **避坑军师** | advisor-risk | 风险识别、坑点预警、新手避坑 |
-| **执行军师** | advisor-execution | 落地计划、步骤拆解、7天计划 |
-| **市场军师** | advisor-market | 行情分析、趋势追踪、竞争分析 |
-
-### 核心功能
-
-- **链接解析** - 自动识别链接平台，提取核心内容
-- **干货提炼** - 深度提炼可执行干货
-- **创业方向匹配** - 根据用户情况推荐匹配创业方向
-- **问题解答** - 遇到创业问题给出直白解决方案
-- **知识库管理** - 自动存储用户收藏内容
-
-> 📖 详细说明见 [agents/startup/](agents/startup/)
-
----
+以「用户为绝对核心，虚拟职能团队为执行载体」，通过轻量化的层级架构，实现多Agent并行协作、任务全流程管控、群内实时进度同步、脑暴过程全透明，帮你用一个群，搞定产品、运营、开发、市场、美工全链路工作，真正实现「一人成军」。
 
 ## ✨ 核心特性
 
-- 🏛️ **层级架构** - 严格的上下级关系，职责清晰
-- 🔄 **异步通信** - 基于飞书/Redis消息队列，告别阻塞
-- 🧠 **智能决策** - 自主任务拆解、风险评估
-- 💡 **持续进化** - 自我学习、经验复用
-- 🛡️ **企业级可靠性** - 熔断器、分布式锁、审计日志
-- 📊 **可观测性** - Prometheus监控、成本分析
+- 🎯 **精准职能Agent池**：专属运营、产品、开发、美工、市场/营销Agent，无冗余功能，开箱即用
+- 📊 **双核心管控角色**：内置项目经理+董事长秘书，自动拆任务、抓进度、写汇报、记纪要，解放你的精力
+- ⚡ **多项目并行架构**：支持同时推进N个项目，每个项目独立管控、资源隔离、互不干扰
+- 📱 **飞书/钉钉原生适配**：所有交互、进度汇报、脑暴、数据抓取全在群内完成，无需切换平台
+- 🔄 **全流程状态管控**：内置标准化任务状态机，任务全链路可追踪、可管控、可回溯
+- 🗄️ **统一协作数据中台**：所有项目成果、脑暴记录、执行数据自动沉淀，构建专属知识库
+- 🛡️ **企业级可靠性**：内置超时重试、故障隔离、审计日志、权限管控，稳定不掉线
 
----
+## 🏛️ 核心架构
 
-## 📦 核心模块
+```mermaid
+flowchart LR
+    U[👤 用户/OPC 经营者] <-->|飞书/钉钉群 自然语言交互| G[📱 群交互网关 Gateway]
+    G <--> T[⚙️ 任务中枢 Task Broker]
+    T <--> PM[📊 项目经理 Agent PM]
+    T <--> SEC[📑 董事长秘书 Agent Secretary]
+    PM <--> SEC
+    T <--> M[🛠️ 职能Agent池]
+    M --> O[📣 运营 Agent]
+    M --> P[📦 产品 Agent]
+    M --> D[💻 开发 Agent]
+    M --> MK[🎨 美工 Agent]
+    M --> MA[📈 市场/营销 Agent]
+    T <--> H[🗄️ 协作数据中台 Data Hub]
+    H --> L[📋 任务日志/进度库]
+    H --> Pj[📂 多项目并行管理库]
+    H --> Dc[📊 脑暴/文档/数据沉淀库]
+    G <--> N[🔔 群内实时同步]
+    N --> 进度汇报
+    N --> 脑暴过程
+    N --> 数据抓取结果
+    N --> 风险预警
+```
 
-| 模块 | 文件 | 功能 |
-|-----|------|------|
-| 层级路由 | `scripts/hierarchical_router.py` | 保障组织架构不变 |
-| Agent工厂 | `scripts/agent_factory.py` | 动态创建临时专家 |
-| Swarm头脑风暴 | `scripts/swarm_orchestrator.py` | 多Agent协作思考 |
-| 报告调度器 | `scripts/report_scheduler.py` | 日报/周报/月报自动 |
-| 消息队列 | `scripts/message_queue.py` | 异步通信 |
-| 事件总线 | `scripts/event_bus.py` | 发布/订阅 |
-| 分布式锁 | `scripts/distributed_lock.py` | 防止竞争 |
-| 熔断器 | `scripts/circuit_breaker.py` | 防止级联故障 |
-| 审计日志 | `scripts/audit_logger.py` | 操作记录 |
-| 权限系统 | `scripts/permission_system.py` | RBAC |
-| 成本分析 | `scripts/cost_analyzer.py` | Token统计 |
-| 监控指标 | `scripts/metrics.py` | Prometheus指标 |
-| 配置中心 | `scripts/config_center.py` | 集中配置 |
-| LLM网关 | `scripts/llm_gateway.py` | 统一模型服务层 |
+### 多项目并行专项架构
 
----
+```mermaid
+flowchart TD
+    U[用户] -->|飞书/钉钉群指令| G[群交互网关]
+    G --> T[任务中枢 Task Broker]
 
-## 🤖 多飞书机器人架构
+    %% 多项目并行隔离调度
+    T --> P1[项目A 独立任务流]
+    T --> P2[项目B 独立任务流]
+    T --> P3[项目C 独立任务流]
 
-Nick 支持配置多个飞书机器人，实现每个 Agent 独立运行、记忆隔离。
+    %% 每个项目独立的PM+Agent组合
+    P1 --> PM1[项目经理-A]
+    PM1 --> AgentPool1[运营+产品+开发 组合]
+    P1 --> SEC1[董秘-A 纪要/汇报]
 
-### 架构优势
+    P2 --> PM2[项目经理-B]
+    PM2 --> AgentPool2[市场+美工 组合]
+    P2 --> SEC2[董秘-B 纪要/汇报]
 
-- **专业化分工**：每个部门（Agent）独立运行
-- **记忆隔离**：用户与各部门的对话独立存储
-- **灵活扩展**：可单独升级某个部门的能力
+    P3 --> PM3[项目经理-C]
+    PM3 --> AgentPool3[产品+运营 组合]
+    P3 --> SEC3[董秘-C 纪要/汇报]
 
-> 📖 详细配置见 [docs/MULTI_BOT_CONFIG.md](docs/MULTI_BOT_CONFIG.md)
+    %% 统一数据层（项目间隔离，授权共享）
+    P1 & P2 & P3 --> H[协作数据中台]
+    H --> 项目A独立数据库
+    H --> 项目B独立数据库
+    H --> 项目C独立数据库
+    H --> 全局公共知识库
 
----
+    %% 群内同步
+    SEC1 & SEC2 & SEC3 --> G
+    G --> 群内分项目进度面板
+    G --> 单项目脑暴过程直播
+    G --> 全局项目汇总周报
+```
 
-## 🚀 安装配置
+## 📦 模块分工与核心职责
+
+### 1. 群交互网关 Gateway
+
+- 飞书/钉钉群唯一交互入口，接收用户所有自然语言指令
+- 指令解析、意图识别、权限校验，屏蔽底层复杂调度逻辑
+- 负责群内消息的发送、卡片渲染、按钮交互回调处理
+- 适配飞书/钉钉开放平台原生能力，开箱即用
+
+### 2. 任务中枢 Task Broker
+
+- 系统核心调度引擎，负责多项目并行管理、任务全生命周期管控
+- 任务拆解、分配、调度、状态流转，内置标准化任务状态机
+- 故障隔离、超时重试、熔断降级，保障多项目并行稳定
+- 统一收口所有Agent的执行结果，协调跨Agent协作
+
+### 3. 项目经理 Agent PM
+
+- 项目总负责人，深度理解用户意图，拆解任务、制定执行计划
+- 排期规划、里程碑设定、多Agent资源协调、进度管控
+- 风险识别、预警、排查，保障项目按时按质完成
+- 群内里程碑汇报、进度同步、问题同步，让用户随时掌控全局
+
+### 4. 董事长秘书 Agent Secretary
+
+- 全流程记录员，自动记录脑暴过程、群内讨论、任务执行细节
+- 项目结束后自动生成完整汇报、执行纪要、成果清单
+- 抓取群内文档、聊天记录、数据，自动提炼核心要点
+- 沉淀项目成果到数据中台，构建用户专属知识库
+
+### 5. 职能Agent池（核心执行层）
+
+| Agent名称 | 核心职责 | 高频适用场景 |
+|-----------|---------|-------------|
+| 运营 Agent | 活动策划、内容排期、用户运营方案、运营周报、社群数据复盘 | 618/双11活动策划、小红书/抖音内容排期、社群运营方案 |
+| 产品 Agent | PRD文档撰写、需求拆解、产品流程图、功能规划、竞品产品分析 | 新品功能设计、需求文档输出、产品迭代规划 |
+| 开发 Agent | 代码编写、架构设计、技术方案评审、bug排查、接口设计、部署方案 | 官网开发、功能接口编写、技术方案输出、bug修复 |
+| 美工 Agent | 海报设计、UI设计、封面图制作、视觉素材生成、品牌视觉规范 | 活动海报、产品UI、公众号封面、短视频封面设计 |
+| 市场/营销 Agent | 市场调研、竞品分析、营销方案、品牌定位、投放策略、文案撰写 | 竞品调研、品牌slogan脑暴、投放方案、营销话术撰写 |
+
+### 6. 协作数据中台 Data Hub
+
+- 系统统一数据底座，所有项目、任务、Agent数据统一存储
+- 多项目数据隔离，授权共享，避免数据孤岛
+- 全量审计日志留存，所有操作可追溯、可复盘
+- 知识库管理，自动沉淀项目成果，支持历史内容复用
+
+## 🔄 核心流程
+
+### 1. 核心主流程（用户指令→执行→汇报全链路）
+
+```mermaid
+sequenceDiagram
+    participant U as 用户(飞书/钉钉群)
+    participant G as 群交互网关
+    participant T as 任务中枢
+    participant PM as 项目经理Agent
+    participant SEC as 董秘Agent
+    participant M as 职能Agent池
+    participant H as 数据中台
+
+    %% 指令接收与解析
+    U->>G: 发送自然语言指令(单/多任务)
+    G->>T: 解析指令→标准化任务结构体
+    T->>PM: 派发任务拆解需求
+    PM->>PM: 拆解任务→里程碑→Agent分工
+    PM->>T: 返回拆解结果+执行计划
+    T->>U: 群内同步【任务拆解方案】，等待确认
+    U->>T: 确认执行/调整指令
+
+    %% 任务执行与协作
+    T->>M: 按计划并行/串行派发子任务
+    M->>H: 实时同步执行过程/中间结果
+    M->>G: 群内同步【子任务进度/脑暴过程】
+    M->>PM: 子任务完成/异常上报
+    PM->>PM: 全局进度管控/风险排查/资源协调
+    PM->>G: 群内同步【里程碑节点/风险预警】
+
+    %% 结果汇总与汇报
+    M->>T: 所有子任务完成上报
+    T->>SEC: 派发结果汇总/纪要生成需求
+    SEC->>H: 拉取全流程执行数据/脑暴记录
+    SEC->>SEC: 生成项目总结/成果沉淀/待办清单
+    SEC->>G: 群内发送【最终项目汇报+完整纪要】
+    G->>U: 呈现最终结果
+    SEC->>H: 沉淀成果到知识库
+```
+
+### 2. 单任务专项执行流程
+
+1. **触发**：用户在群内@对应Agent 或 发送单任务指令（例："@美工Agent 做一张新品活动海报"）
+
+2. **网关接收**：校验用户权限→解析指令→提取核心需求→生成标准化单任务
+
+3. **任务中枢调度**：直接派发任务给对应职能Agent，同步抄送项目经理&董秘
+
+4. **执行过程**：
+   - 职能Agent接收任务→群内回复【任务已接收，预计XX时间完成】
+   - 执行中实时同步进度（例："初稿已完成，请查收"）
+   - 接收用户反馈→迭代优化
+
+5. **收尾**：任务完成→董秘自动生成执行纪要→沉淀到数据中台→群内同步【任务已完成】
+
+### 3. 多项目并行执行流程
+
+1. **触发**：用户发送多项目指令（例："同时推进3件事：1. 新品上线项目 2. 竞品调研项目 3. 618活动策划"）
+
+2. **网关接收**：解析指令→拆分出3个独立项目→生成项目唯一ID
+
+3. **任务中枢调度**：
+   - 为每个项目分配独立的项目经理&董秘（资源隔离）
+   - 每个项目独立拆解任务、分配Agent、管控进度
+   - 全局项目互不干扰，支持不同优先级调度
+
+4. **群内同步规则**：
+   - 每个项目单独生成【进度卡片】，分栏展示
+   - 里程碑节点单独@用户汇报，日常进度汇总播报
+   - 支持用户单独@某项目的PM/Agent，单独沟通该项目事宜
+
+5. **收尾**：每个项目独立完成验收→独立生成汇报→全局每周生成多项目汇总周报
+
+### 4. 多Agent脑暴协作流程
+
+1. **触发**：用户发送脑暴指令（例："所有人来脑暴一下新品牌slogan，产品、运营、市场、美工都参与"）
+
+2. **网关接收**：解析脑暴主题→确定参与Agent→生成脑暴任务
+
+3. **任务中枢调度**：
+   - 项目经理主持脑暴，设定规则、轮次、时长
+   - 董秘全程记录，同步整理发言要点
+   - 按顺序/并行模式，触发各Agent输出观点
+
+4. **群内执行**：
+   - 项目经理开场→明确脑暴主题与规则
+   - 各Agent依次在群内输出观点，可互相引用、反驳、补充
+   - 项目经理控场，引导方向，避免跑题
+   - 董秘实时同步【脑暴要点清单】到群内
+
+5. **收尾**：脑暴结束→董秘生成完整脑暴纪要+结论清单+待落地任务→项目经理派发后续执行任务→群内同步最终结果
+
+## 📊 任务状态机
+
+### 核心状态定义（全项目通用，支持并行隔离）
+
+| 状态名称 | 状态编码 | 核心含义 | 触发场景 |
+|---------|---------|---------|---------|
+| 待确认 | pending_confirm | 任务已拆解，等待用户确认执行方案 | 用户发送指令后，PM完成拆解，待用户确认 |
+| 待分配 | pending_assign | 任务已确认，等待分配给对应Agent | 用户确认执行方案后，待PM分配子任务 |
+| 执行中 | in_progress | Agent正在执行任务，过程可追踪 | Agent接收任务，开始执行 |
+| 待审核 | pending_review | 子任务完成，等待PM/用户验收 | Agent完成子任务，提交验收 |
+| 已完成 | completed | 全任务/子任务验收通过，正式收尾 | 用户/PM确认验收通过 |
+| 已失败 | failed | 任务执行失败，无法继续 | Agent执行报错/超时超过最大重试次数 |
+| 已暂停 | paused | 任务被用户手动暂停，可恢复 | 用户发送暂停指令 |
+| 已取消 | cancelled | 任务被用户手动取消，不可恢复 | 用户发送取消指令 |
+
+### 状态流转规则（强制闭环，无游离状态）
+
+```mermaid
+stateDiagram-v2
+    [*] --> pending_confirm: 用户发送指令，PM完成拆解
+    pending_confirm --> pending_assign: 用户确认执行方案
+    pending_confirm --> cancelled: 用户取消任务
+    pending_assign --> in_progress: Agent接收任务，开始执行
+    in_progress --> pending_review: Agent完成任务，提交验收
+    in_progress --> failed: 执行报错/超时超上限
+    in_progress --> paused: 用户发送暂停指令
+    paused --> in_progress: 用户发送恢复指令
+    paused --> cancelled: 用户发送取消指令
+    pending_review --> completed: 验收通过
+    pending_review --> in_progress: 验收不通过，退回修改
+    failed --> in_progress: 用户触发重试
+    failed --> cancelled: 用户放弃任务
+    completed --> [*]: 任务闭环，沉淀到知识库
+    cancelled --> [*]: 任务终止
+```
+
+### 状态联动规则（与飞书/钉钉群深度绑定）
+
+| 状态变更 | 群内自动触发动作 | 抄送对象 |
+|---------|----------------|---------|
+| 进入pending_confirm | 自动发送【任务拆解方案】，附带「确认执行/调整/取消」按钮 | @用户 |
+| 进入in_progress | 自动发送【任务启动通知】，标注负责人、预计完成时间 | @用户、对应Agent、PM |
+| 进入pending_review | 自动发送【任务验收申请】，附带完成成果 | @用户、PM |
+| 进入completed | 自动发送【任务完成通知】，附带董秘生成的执行纪要 | @全体参与Agent、用户 |
+| 进入failed | 自动发送【任务失败告警】，附带失败原因、重试建议 | @用户、PM |
+| 进入paused/cancelled | 自动发送【任务暂停/取消通知】，标注操作人 | @全体参与Agent、用户 |
+
+### 异常处理与兜底机制
+
+1. **超时兜底**：为每个状态设置超时时间（例：Agent执行超时24h），超时自动触发告警，PM介入协调，超过3次重试自动标记为failed
+
+2. **故障隔离**：多项目并行时，单个项目/Agent故障，不影响其他项目正常执行
+
+3. **权限兜底**：所有状态变更，最终决策权归用户，PM仅做管控，Agent仅做执行，无权限擅自变更任务状态
+
+4. **数据兜底**：每个状态变更，全量日志同步到数据中台，永久留存，可追溯、可复盘
+
+## 🚀 快速开始
 
 ### 1. 环境要求
 
-| 要求 | 版本 | 说明 |
-|-----|------|------|
-| Python | ≥ 3.11 | 主要运行环境 |
-| Node.js | ≥ 22 | 用于OpenClaw |
-| Git | 任意 | 代码管理 |
-| Redis | ≥ 6.0 | 消息队列(可选) |
-| PostgreSQL | ≥ 14 | 数据存储(可选) |
+| 依赖 | 版本要求 | 说明 |
+|-----|---------|------|
+| Python | ≥ 3.11 | 核心运行环境 |
+| Git | 任意 | 代码拉取管理 |
+| Redis | ≥ 6.0 | 消息队列、任务状态存储（可选） |
+| 飞书/钉钉开放平台账号 | 任意 | 机器人应用创建与配置 |
 
-### 2. 克隆项目
+### 2. 项目安装
 
 ```bash
 # 克隆项目
 git clone https://github.com/StarlitSKy88/nick.git
 cd nick
-```
 
-### 3. 创建虚拟环境 (推荐)
-
-```bash
-# 创建虚拟环境
+# 创建并激活虚拟环境
 python -m venv venv
-
-# 激活虚拟环境
-# Linux/Mac:
+# Linux/Mac
 source venv/bin/activate
-
-# Windows:
+# Windows
 venv\Scripts\activate
-```
 
-### 4. 安装依赖
-
-```bash
 # 安装核心依赖
 pip install -r requirements.txt
-
-# 安装可选依赖
-pip install redis prometheus-client psutil aiohttp fastapi uvicorn
-
-# 安装开发依赖 (可选)
-pip install pytest pytest-cov ruff mypy black
 ```
 
-### 5. 环境配置
+### 3. 飞书/钉钉机器人配置
+
+#### 3.1 飞书配置
+
+1. 访问 [飞书开放平台](https://open.feishu.cn/)，创建企业自建应用
+2. 应用权限添加：发送消息、接收消息、读取群聊信息、读取用户基本信息
+3. 配置消息回调地址，启用事件订阅
+4. 获取 App ID、App Secret、Verification Token，填入配置文件
+5. 应用发布上线，添加到目标群聊
+
+#### 3.2 钉钉配置
+
+1. 访问钉钉开放平台，创建企业内部应用
+2. 应用权限添加：群消息发送、接收、群会话管理、用户信息读取
+3. 配置消息回调地址，启用事件订阅
+4. 获取 App Key、App Secret、Verification Token，填入配置文件
+5. 应用发布，添加到目标群聊
+
+### 4. 环境配置
 
 ```bash
 # 复制配置模板
 cp .env.example .env
 
-# 编辑配置文件
+# 编辑配置文件，填入飞书/钉钉、LLM API等配置
 vim .env
 ```
 
-#### 完整环境变量配置
+核心配置项说明：
 
 ```bash
-# ═══════════════════════════════════════════════════════════════
-# 必填配置
-# ═══════════════════════════════════════════════════════════════
+# 飞书应用配置
+FEISHU_APP_ID="cli_xxxxxxxxxxxxxx"
+FEISHU_APP_SECRET="xxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+FEISHU_VERIFICATION_TOKEN="xxxxxxxxxxxxxxxxxxxx"
 
-# 飞书应用配置 (每个Agent独立应用)
-# 获取地址: https://open.feishu.cn/
-export FEISHU_APP_ID="cli_xxxxxxxxxxxxxx"
-export FEISHU_APP_SECRET="xxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-export FEISHU_VERIFICATION_TOKEN="xxxxxxxxxxxxxxxxxxxx"
+# 钉钉应用配置（二选一即可）
+DINGTALK_APP_KEY="xxxxxxxxxxxxxx"
+DINGTALK_APP_SECRET="xxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+DINGTALK_VERIFICATION_TOKEN="xxxxxxxxxxxxxxxxxxxx"
 
-# ═══════════════════════════════════════════════════════════════
-# Redis配置 (消息队列)
-# ═══════════════════════════════════════════════════════════════
-export REDIS_HOST="localhost"
-export REDIS_PORT="6379"
-export REDIS_DB="0"
-export REDIS_PASSWORD=""
+# LLM模型配置（支持OpenAI/OpenRouter/MiniMax）
+OPENROUTER_API_KEY="xxxxxxxxxxxx"
+DEFAULT_MODEL="deepseek/deepseek-chat"
 
-# ═══════════════════════════════════════════════════════════════
-# LLM模型配置
-# ═══════════════════════════════════════════════════════════════
-
-# OpenAI (可选)
-export OPENAI_API_KEY="sk-xxxxxxxxxxxx"
-
-# OpenRouter (可选,免费模型)
-# 获取地址: https://openrouter.ai/keys
-export OPENROUTER_API_KEY="xxxxxxxxxxxx"
-
-# MiniMax (默认)
-
-### LLM Gateway 统一模型服务
-
-项目内置 **LLM Gateway** 模块，提供统一的 LLM 服务：
-
-```bash
-# 查看状态
-python scripts/llm_gateway.py
-```
-
-**功能特性：**
-- 🔑 **统一配置** - 一次配置 API Key，所有 Agent 共享
-- 🤖 **多模型支持** - 不同 Agent 可用不同模型
-- ⚡ **快速切换** - 通过 Dashboard 随时更换 API Key 和模型
-
-**配置文件：** `config/llm_config.yaml`
-
-```yaml
-llm:
-  # 全局默认
-  default_provider: "openrouter"
-  default_model: "deepseek/deepseek-chat"
-  
-  # API Keys (支持环境变量)
-  api_keys:
-    openrouter: "${OPENROUTER_API_KEY}"
-  
-  # Agent 专属模型 (可选)
-  agent_models:
-    taizi: "anthropic/claude-sonnet-4-6"
-    gongbu: "deepseek/deepseek-chat"
-```
-
-**API 端点：**
-
-| 端点 | 方法 | 说明 |
-|-----|------|------|
-| `/api/llm/status` | GET | 获取配置状态 |
-| `/api/llm/set-global-model` | POST | 设置全局默认模型 |
-| `/api/llm/set-agent-model` | POST | 设置 Agent 专属模型 |
-| `/api/llm/set-api-key` | POST | 更新 API Key |
-| `/api/llm/models` | POST | 获取可用模型列表 |
-export MINIMAX_API_KEY="xxxxxxxxxxxx"
-
-# ═══════════════════════════════════════════════════════════════
-# AI搜索配置 (可选)
-# ═══════════════════════════════════════════════════════════════
-
-# Tavily - 获取地址: https://app.tavily.com/api-keys
-export TAVILY_API_KEY="xxxxxxxxxxxx"
-
-# ═══════════════════════════════════════════════════════════════
 # 应用配置
-# ═══════════════════════════════════════════════════════════════
+NICK_ENV="production"
+NICK_PORT="7891"
+LOG_LEVEL="INFO"
 
-# 应用环境
-export NICK_ENV="development"  # development | staging | production
-
-# 应用端口
-export NICK_PORT="7891"
-
-# 日志级别
-export LOG_LEVEL="INFO"  # DEBUG | INFO | WARNING | ERROR
-
-# 开启的功能
-export ENABLE_METRICS="true"
-export ENABLE_TRACING="true"
-export ENABLE_AUDIT="true"
-
-# ═══════════════════════════════════════════════════════════════
-# Agent配置
-# ═══════════════════════════════════════════════════════════════
-
-# Agent通信超时 (秒)
-export AGENT_TIMEOUT="30"
-export AGENT_MAX_RETRIES="3"
-export AGENT_HEARTBEAT_INTERVAL="30"
-
-# 告警配置
-export AGENT_ENABLE_ALERT="true"
-export AGENT_ALERT_WEBHOOK=""
-
-# ═══════════════════════════════════════════════════════════════
-# 预算配置 (成本分析)
-# ═══════════════════════════════════════════════════════════════
-export DAILY_BUDGET="100.0"
-export MONTHLY_BUDGET="3000.0"
+# 任务配置
+AGENT_TIMEOUT="3600"
+AGENT_MAX_RETRIES="3"
 ```
 
-### 6. 飞书应用配置 (详细步骤)
-
-#### 6.1 创建应用
-
-1. 访问 [飞书开放平台](https://open.feishu.cn/)
-2. 点击「创建应用」
-3. 填写应用名称和描述
-4. 创建后进入应用详情
-
-#### 6.2 配置权限
-
-在「应用权限」中添加以下权限：
-
-| 权限名称 | 权限码 | 说明 |
-|---------|--------|------|
-| 发送消息 | `im:message:send_as` | 以应用身份发送消息 |
-| 接收消息 | `im:message:receive` | 接收用户消息 |
-| 创建群聊 | `im:chat:create` | 创建群聊 |
-| 成员管理 | `im:chat:members` | 管理群成员 |
-| 用户信息 | `contact:user.base:readonly` | 读取用户基本信息 |
-| 用户邮箱 | `contact:user.email:readonly` | 读取用户邮箱 |
-
-#### 6.3 发布应用
-
-1. 在「版本管理与发布」中创建版本
-2. 填写版本号和发布说明
-3. 提交审核
-4. 审核通过后发布
-
-#### 6.4 获取配置
-
-发布后获取以下信息：
-- `App ID` - 应用ID
-- `App Secret` - 应用密钥
-- `Verification Token` - 回调验证令牌
-
-### 7. Redis安装 (可选)
+### 5. 启动运行
 
 ```bash
-# Ubuntu/Debian
-sudo apt install redis-server
-
-# CentOS/RHEL
-sudo yum install redis
-
-# macOS
-brew install redis
-
-# 启动Redis
-redis-server
-
-# 或使用Docker
-docker run -d -p 6379:6379 redis:alpine
-```
-
-### 8. 初始化数据
-
-```bash
-# 初始化目录结构
-python3 scripts/init_directories.py
-
-# 初始化配置
-python3 scripts/init_config.py
-
-# 验证安装
-python3 scripts/health_check.py
-```
-
----
-
-## 🚀 启动
-
-### 方式一: 一键启动 (推荐)
-
-```bash
-cd /path/to/nick
+# 一键启动（推荐）
 bash start.sh
-```
 
-### 方式二: 手动启动
-
-```bash
-# 1. 启动看板服务器
-cd dashboard
-python3 server.py --port 7891
-
-# 2. 启动数据刷新 (新终端)
-cd ..
-bash scripts/run_loop.sh
-
-# 3. 启动Agent (可选, 第三个终端)
-python3 scripts/pope/main.py
-```
-
-### 方式三: Docker启动
-
-```bash
-# 启动所有服务
+# 或Docker启动
 docker-compose up -d
-
-# 查看日志
-docker-compose logs -f
-
-# 停止服务
-docker-compose down
 ```
 
----
+启动成功后，在飞书/钉钉群内@机器人，发送「你好」，即可唤醒系统，开始使用。
 
-## 📖 使用指南
+## 💡 核心场景使用示例
 
-### 1. 任务管理
+### 示例1：单Agent任务执行
 
-```bash
-# 创建任务
-python3 scripts/kanban_update.py create \
-    JJC-20260319-001 \
-    "开发用户登录功能" \
-    教皇 \
-    教皇 \
-    "任务描述内容"
-
-# 更新状态
-python3 scripts/kanban_update.py state \
-    JJC-20260319-001 \
-    Doing \
-    "开始开发"
-
-# 完成任务
-python3 scripts/kanban_update.py done \
-    JJC-20260319-001 \
-    "产出: login.py" \
-    "完成摘要"
-
-# 查看统计
-python3 scripts/kanban_update.py stats
+```
+用户：@美工Agent 帮我做一张618新品活动海报，风格简约科技风，尺寸1080*1920
+↓
+系统：【任务已接收】美工Agent已接单，预计30分钟内完成初稿
+↓
+美工Agent：【初稿完成】这是为您生成的618活动海报，请查收，有任何修改需求随时告诉我
+↓
+用户：把主色调换成红色，再加一个限时优惠的标识
+↓
+美工Agent：【修改完成】已按您的需求调整，请看最终版本
+↓
+系统：【任务已完成】董秘已为您生成本次任务的执行纪要，已沉淀到知识库
 ```
 
-### 2. 层级管理
+### 示例2：多项目并行执行
 
-```bash
-# 查看层级
-python3 scripts/hierarchical_router.py --list
-
-# 查看层级树
-python3 scripts/hierarchical_router.py --tree
-
-# 检查路由权限
-python3 scripts/hierarchical_router.py --check 工匠行会 财政部
-
-# 添加新部门
-python3 scripts/hierarchical_router.py --add \
-    波斯国 \
-    波斯国 \
-    地方 \
-    教皇
-
-# 获取团队成员
-python3 scripts/hierarchical_router.py --team 主教团
+```
+用户：同时推进3个项目：
+1. 新品上线项目：产品出需求，开发做落地，10天内上线
+2. 竞品调研项目：市场Agent出3家竞品的完整分析报告
+3. 618活动策划：运营+美工出完整活动方案+宣传海报
+↓
+系统：【多项目已创建】已为您拆分3个独立项目，分配专属项目经理&董秘
+↓
+【项目1-新品上线】项目经理：已完成任务拆解，里程碑：
+- 第1-2天：产品输出PRD
+- 第3-8天：开发实现功能
+- 第9-10天：测试上线
+↓
+【项目2-竞品调研】市场Agent：已开始调研，预计2天内输出完整报告
+↓
+【项目3-618活动】运营Agent：已完成活动方案初稿，同步美工开始设计海报
+↓
+每日固定时间，系统自动推送3个项目的汇总进度，用户可单独跟进任意项目
 ```
 
-### 3. Agent工厂
+### 示例3：多Agent脑暴协作
 
-```bash
-# 创建临时专家 (24小时)
-python3 scripts/agent_factory.py --create "金融专家" finance
-
-# 创建临时专家 (自定义时间)
-python3 scripts/agent_factory.py --create "安全专家" security --expires 48
-
-# 创建项目组 (7天)
-python3 scripts/agent_factory.py --project \
-    "金融系统" \
-    "finance,devops,security" \
-    --days 7
-
-# 列出临时Agent
-python3 scripts/agent_factory.py --list
-
-# 销毁Agent
-python3 scripts/agent_factory.py --destroy temp_finance_xxxxx
-
-# 清理过期Agent
-python3 scripts/agent_factory.py --cleanup
 ```
-
-### 4. Swarm头脑风暴
-
-```bash
-# 创建头脑风暴
-python3 scripts/swarm_orchestrator.py --create \
-    "AI发展方向" \
-    红衣主教团 \
-    主教团 \
-    工匠行会 \
-    --mode hybrid \
-    --rounds 5
-
-# 启动
-python3 scripts/swarm_orchestrator.py --start swarm_xxxxx
-
-# 查看列表
-python3 scripts/swarm_orchestrator.py --list
-
-# 导出结果
-python3 scripts/swarm_orchestrator.py --export swarm_xxxxx markdown
+用户：所有人来脑暴一下新品牌的slogan，产品、运营、市场、美工都参与，围绕「年轻人的极简数码配件」这个定位
+↓
+项目经理：【脑暴开始】本次脑暴主题：新品牌slogan，定位：年轻人的极简数码配件，参与人：产品、运营、市场、美工Agent，每人输出3个方案，可互相补充
+↓
+运营Agent：输出3个slogan方案+核心理由
+↓
+市场Agent：输出3个slogan方案+传播亮点分析
+↓
+产品Agent：输出3个slogan方案+产品定位匹配度分析
+↓
+美工Agent：输出3个slogan方案+视觉呈现建议
+↓
+项目经理：【脑暴总结】已汇总所有方案，提炼出5个最优选项，附完整分析
+↓
+董秘：【脑暴纪要】已为您生成本次脑暴的完整纪要，包含所有方案、分析、结论，已沉淀到知识库
 ```
-
-### 5. 报告调度
-
-```bash
-# 手动生成日报
-python3 scripts/report_scheduler.py --daily
-
-# 手动生成周报
-python3 scripts/report_scheduler.py --weekly
-
-# 手动生成月报
-python3 scripts/report_scheduler.py --monthly
-
-# 列出报告
-python3 scripts/report_scheduler.py --list
-
-# 启动自动调度
-python3 scripts/report_scheduler.py --start
-
-# 停止调度
-python3 scripts/report_scheduler.py --stop
-```
-
-### 6. 权限管理
-
-```bash
-# 检查权限
-python3 scripts/permission_system.py --check 教皇 "agent:create"
-
-# 授予权限
-python3 scripts/permission_system.py --grant \
-    工匠行会 \
-    "task:execute" \
-    教皇
-
-# 分配角色
-python3 scripts/permission_system.py --assign-role \
-    占星术士 \
-    manager \
-    教皇
-
-# 查看用户权限
-python3 scripts/permission_system.py --perms 工匠行会
-
-# 列出所有用户
-python3 scripts/permission_system.py --list-users
-```
-
-### 7. 成本分析
-
-```bash
-# 查看成本统计
-python3 scripts/cost_analyzer.py --stats
-
-# 查看预算状态
-python3 scripts/cost_analyzer.py --budget
-
-# 查看模型使用
-python3 scripts/cost_analyzer.py --models
-
-# 导出报告
-python3 scripts/cost_analyzer.py --export month
-
-# 设置预算
-python3 scripts/cost_analyzer.py --set-budget 200 5000
-```
-
-### 8. 监控指标
-
-```bash
-# 启动指标服务器
-python3 scripts/metrics.py --server --port 9090
-
-# 查看指标 (文本)
-python3 scripts/metrics.py
-
-# 查看系统指标
-python3 scripts/metrics.py --system
-
-# 查看Agent指标
-python3 scripts/metrics.py --agent 工匠行会
-
-# Prometheus格式
-python3 scripts/metrics.py --prometheus
-
-# JSON格式
-python3 scripts/metrics.py --json
-```
-
-### 9. 运维命令
-
-```bash
-# 健康检查
-python3 scripts/health_check.py
-
-# 性能分析
-python3 scripts/performance.py
-
-# 实时监控
-python3 scripts/monitor.py
-
-# 数据备份
-python3 scripts/backup.py
-
-# 一键优化
-python3 scripts/optimize_all.py
-```
-
----
 
 ## 📁 项目结构
 
 ```
 nick/
-├── agents/                    # Agent定义
-│   ├── pope/                # 教皇
-│   ├── cardinal/            # 红衣主教团
-│   ├── bishop/             # 主教团
-│   ├── cardinal_office/    # 枢机处
-│   ├── guild/              # 工匠行会
-│   ├── treasury/           # 财政部
-│   ├── knights/            # 骑士团
-│   ├── inquisition/        # 宗教裁判所
-│   ├── ceremony/           # 典礼部
-│   ├── personnel/          # 人事部
-│   ├── astrologer/         # 占星术士
-│   └── common/            # 通用Skills
-├── scripts/                # 核心脚本
-│   ├── hierarchical_router.py
-│   ├── agent_factory.py
-│   ├── swarm_orchestrator.py
-│   ├── report_scheduler.py
-│   ├── message_queue.py
-│   ├── event_bus.py
-│   ├── distributed_lock.py
-│   ├── circuit_breaker.py
-│   ├── audit_logger.py
-│   ├── permission_system.py
-│   ├── cost_analyzer.py
-│   ├── metrics.py
-│   ├── config_center.py
+├── agents/                    # Agent核心定义
+│   ├── pm/                    # 项目经理Agent
+│   ├── secretary/             # 董事长秘书Agent
+│   ├── operation/             # 运营Agent
+│   ├── product/               # 产品Agent
+│   ├── development/           # 开发Agent
+│   ├── design/                # 美工Agent
+│   ├── marketing/             # 市场/营销Agent
+│   └── common/                # 通用能力模块
+├── scripts/                   # 核心脚本模块
+│   ├── task_broker.py         # 任务中枢核心
+│   ├── gateway.py             # 群交互网关
+│   ├── state_machine.py        # 任务状态机
+│   ├── message_queue.py       # 消息队列
+│   ├── audit_logger.py         # 审计日志
 │   └── ...
-├── dashboard/              # 看板前端
-├── data/                  # 数据目录
-├── config/                # 配置文件
-├── docker/                 # Docker配置
-├── tests/                  # 测试
-├── start.sh               # 启动脚本
-├── docker-compose.yml
+├── config/                    # 配置文件目录
+├── dashboard/                 # 可视化看板前端
+├── data/                      # 数据存储目录
+├── docs/                      # 详细文档
+├── tests/                     # 测试用例
+├── start.sh                   # 一键启动脚本
+├── docker-compose.yml         # Docker部署配置
 ├── Dockerfile
 ├── requirements.txt
 └── README.md
 ```
 
----
+## 🤝 贡献指南
 
-## 🔧 常见问题
+欢迎提交 Issue 和 Pull Request，一起完善项目！
 
-### Q1: 启动失败，提示缺少依赖
-
-```bash
-# 重新安装依赖
-pip install -r requirements.txt --upgrade
-```
-
-### Q2: Redis连接失败
-
-```bash
-# 检查Redis是否启动
-redis-cli ping
-
-# 启动Redis
-redis-server
-
-# 或使用Docker
-docker run -d -p 6379:6379 redis:alpine
-```
-
-### Q3: 飞书消息收不到
-
-1. 检查应用是否已发布
-2. 检查回调URL是否配置正确
-3. 检查App ID和Secret是否正确
-
-### Q4: 权限不足
-
-```bash
-# 重置权限
-python3 scripts/permission_system.py --load
-```
-
----
-
-## 📜 API Keys 获取
-
-| 服务 | 用途 | 获取地址 |
-|-----|------|---------|
-| 飞书 | Agent通信 | open.feishu.cn |
-| Tavily | AI搜索 | app.tavily.com |
-| OpenRouter | 免费模型 | openrouter.ai |
-| OpenAI | LLM | platform.openai.com |
-
----
-
-## 🤝 贡献
-
-欢迎提交 Issue 和 Pull Request！
+1. Fork 本仓库
+2. 创建你的特性分支 (`git checkout -b feature/AmazingFeature`)
+3. 提交你的修改 (`git commit -m 'Add some AmazingFeature'`)
+4. 推送到分支 (`git push origin feature/AmazingFeature`)
+5. 打开 Pull Request
 
 ## 📄 许可证
 
-MIT License
+本项目基于 MIT License 开源，详情请查看 LICENSE 文件。
 
 ---
 
